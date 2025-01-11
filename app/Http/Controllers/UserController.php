@@ -10,18 +10,22 @@ use Illuminate\Support\Facades\Auth;
 class UserController extends Controller
 {
     public function register(Request $request)
-    {
-        $validated = $request->validate([
-            'username' => 'required|string|max:50|unique:users',
-            'email' => 'required|string|email|max:100|unique:users',
-            'password' => 'required|string|min:8',
-        ]);
+{
+    $validated = $request->validate([
+        'username' => 'required|string|max:50|unique:users',
+        'email' => 'required|string|email|max:100|unique:users',
+        'password' => 'required|string|min:8|confirmed', // Ensure password confirmation
+    ]);
 
-        $validated['password'] = Hash::make($validated['password']);
-        $user = User::create($validated);
+    // Hash the password here after validation
+    $validated['password'] = Hash::make($validated['password']);
+    
+    // Create user with the validated data
+    $user = User::create($validated);
 
-        return response()->json(['message' => 'User registered successfully', 'user' => $user], 201);
-    }
+    return response()->json(['message' => 'User registered successfully', 'user' => $user], 201);
+}
+
 
     public function login(Request $request)
     {
