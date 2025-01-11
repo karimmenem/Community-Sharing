@@ -14,15 +14,16 @@ class CreateVotesTable extends Migration
     public function up()
     {
         Schema::create('votes', function (Blueprint $table) {
-            $table->bigIncrements('voteId'); // Primary key
-            $table->unsignedBigInteger('postId'); // Foreign key to posts table
-            $table->unsignedBigInteger('userId'); // Foreign key to users table
-            $table->boolean('voteType'); // Boolean for upvote/downvote
+            $table->bigIncrements('voteId'); // Primary key (auto-incrementing voteId)
+            $table->unsignedBigInteger('post_id'); // Foreign key to posts table (referencing postId)
+            $table->unsignedBigInteger('user_id'); // Foreign key to users table (referencing id)
+            $table->boolean('vote_type'); // Boolean for upvote/downvote
             $table->timestamps();
 
-            $table->foreign('postId')->references('postId')->on('posts')->onDelete('cascade');
-            $table->foreign('userId')->references('userId')->on('users')->onDelete('cascade');
-            $table->unique(['postId', 'userId']);
+            // Foreign key constraints
+            $table->foreign('post_id')->references('postId')->on('posts')->onDelete('cascade'); // Reference to posts.postId
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade'); // Reference to users.id
+            $table->unique(['post_id', 'user_id']); // Unique constraint to prevent multiple votes by same user on the same post
         });
     }
 

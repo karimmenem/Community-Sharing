@@ -14,14 +14,15 @@ class CreateCommentsTable extends Migration
     public function up()
     {
         Schema::create('comments', function (Blueprint $table) {
-            $table->bigIncrements('commentId'); // Primary key
-            $table->unsignedBigInteger('postId'); // Foreign key to posts table
-            $table->unsignedBigInteger('userId'); // Foreign key to users table
+            $table->bigIncrements('commentId'); // Primary key (auto-incrementing commentId)
+            $table->unsignedBigInteger('post_id'); // Foreign key to posts table (referencing postId)
+            $table->unsignedBigInteger('user_id'); // Foreign key to users table (referencing id)
             $table->text('content');
             $table->timestamps();
 
-            $table->foreign('postId')->references('postId')->on('posts')->onDelete('cascade');
-            $table->foreign('userId')->references('userId')->on('users')->onDelete('cascade');
+            // Foreign key constraints
+            $table->foreign('post_id')->references('postId')->on('posts')->onDelete('cascade'); // Reference to posts.postId
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade'); // Reference to users.id
         });
     }
 

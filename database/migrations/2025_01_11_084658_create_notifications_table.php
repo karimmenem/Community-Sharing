@@ -14,13 +14,14 @@ class CreateNotificationsTable extends Migration
     public function up()
     {
         Schema::create('notifications', function (Blueprint $table) {
-            $table->bigIncrements('notificationId'); // Primary key
-            $table->unsignedBigInteger('userId'); // Foreign key to users table
+            $table->bigIncrements('notification_id'); // Primary key
+            $table->unsignedBigInteger('user_id'); // Foreign key to users table
             $table->text('message');
-            $table->boolean('isRead')->default(false);
+            $table->boolean('is_read')->default(false);
             $table->timestamps();
 
-            $table->foreign('userId')->references('userId')->on('users')->onDelete('cascade');
+            // Foreign key reference to users.id
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

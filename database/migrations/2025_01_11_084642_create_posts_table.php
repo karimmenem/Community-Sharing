@@ -14,15 +14,16 @@ class CreatePostsTable extends Migration
     public function up()
     {
         Schema::create('posts', function (Blueprint $table) {
-            $table->bigIncrements('postId'); // Primary key
-            $table->unsignedBigInteger('userId'); // Foreign key to users table
-            $table->unsignedBigInteger('categoryId'); // Foreign key to categories table
+            $table->bigIncrements('postId'); // Primary key (auto-incrementing postId)
+            $table->unsignedBigInteger('user_id'); // Foreign key to users table (referencing id)
+            $table->unsignedBigInteger('categoryId'); // Foreign key to categories table (referencing categoryId)
             $table->string('title');
             $table->text('description');
             $table->timestamps();
 
-            $table->foreign('userId')->references('userId')->on('users')->onDelete('cascade');
-            $table->foreign('categoryId')->references('categoryId')->on('categories')->onDelete('set null');
+            // Foreign key constraints
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade'); // Reference to users.id
+            $table->foreign('categoryId')->references('categoryId')->on('categories')->onDelete('set null'); // Reference to categories.categoryId
         });
     }
 
