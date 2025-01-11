@@ -5,8 +5,7 @@
     
     <!-- Buttons -->
     <div class="mt-4">
-        <a href="{{ route('auth.login') }}" class="btn btn-primary btn-lg mx-2">Sign In</a>
-        <a href="{{ route('auth.register') }}" class="btn btn-success btn-lg mx-2">Sign Up</a>
+        <p>cheese</p>
     </div>
 </div>
 
