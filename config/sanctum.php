@@ -33,7 +33,7 @@ return [
     |
     */
 
-    'guard' => ['web'],
+    'guard' => ['web'],  // Use 'sanctum' if API-only setup is required
 
     /*
     |--------------------------------------------------------------------------

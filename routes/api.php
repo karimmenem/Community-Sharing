@@ -1,19 +1,11 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\UserController;
+use App\Http\Controllers\UserController; // assuming your RegisterController is inside this
 
-// Public Routes
-Route::post('/register', [UserController::class, 'register']);  // For user registration
-Route::post('/login', [UserController::class, 'login']);        // For user login
 
-// Protected Routes (requires authentication via Sanctum)
-Route::middleware('auth:sanctum')->group(function () {
-    Route::get('/user', function (Request $request) {
-        return $request->user();  // Returns authenticated user's information
-    });
-
-    // Add any other routes here that require the user to be authenticated
-    // For example:
-    // Route::get('/profile', [UserController::class, 'showProfile']);
+Route::controller(UserController::class)->group(function() {
+    Route::post('register', 'register');
+    Route::post('login', 'login');
 });
+

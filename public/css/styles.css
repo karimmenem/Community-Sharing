@@ -1,0 +1,39 @@
+.ShareTitle {
+    font-family: 'Poppins', sans-serif;
+    font-size: 7em;
+    color: purple;
+
+}
+
+.welcomePar {
+    color: rgb(182, 83, 193);
+}
+
+body {
+    background-image: url('/images/community background.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.custom-primary-btn {
+    background-color: #cf65bb; /* Example color */
+    border-color: #cf65bb; /* Example color */
+    color: white; /* Text color */
+}
+
+.custom-secondary-btn {
+    background-color: #e995e7; /* Example color */
+    border-color: #e995e7; /* Example color */
+    color: white; /* Text color */
+}
+
+.custom-primary-btn:hover {
+    background-color: #2980b9; /* Darker shade for hover effect */
+    border-color: #2980b9;
+}
+
+.custom-secondary-btn:hover {
+    background-color: #e67e22; /* Darker shade for hover effect */
+    border-color: #e67e22;
+}
