@@ -10,7 +10,7 @@
 
 
 </head>
-<body style= "background-color:lavender;">
+<body style="background-image: url('/images/community background.jpg'); background-size: cover; background-position: center; background-repeat: no-repeat;">
 
 <div class="px-4 py-5 my-5 text-center">
     <h1 class="display-5 fw-bold ShareTitle">Share Sphere</h1>

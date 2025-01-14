@@ -32,16 +32,17 @@ class UserController extends Controller
             'email' => 'required|email',
             'password' => 'required',
         ]);
-
+    
         if (!Auth::attempt($credentials)) {
             return response()->json(['message' => 'Invalid credentials'], 401);
         }
-
-        $user = Auth::user();
-        $token = $user->createToken('auth_token')->plainTextToken;
-
-        return response()->json(['message' => 'Login successful', 'token' => $token], 200);
+    
+        $request->session()->regenerate(); // Prevent session fixation attacks
+    
+        // Redirect to posts.index route
+        return redirect()->route('posts.index');
     }
+    
 
     // Get User Profile
     public function getUserProfile($id)

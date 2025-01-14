@@ -8,9 +8,11 @@ use Illuminate\Http\Request;
 class PostController extends Controller
 {
     public function index()
-    {
-        return Post::with(['user', 'category'])->get();
-    }
+{
+    $posts = Post::with(['user', 'category'])->get(); // Fetch posts with relationships
+    return view('posts.index', compact('posts')); // Pass posts data to the Blade view
+}
+
 
     public function store(Request $request)
     {
@@ -26,10 +28,10 @@ class PostController extends Controller
     }
 
     public function show($id)
-    {
-        $post = Post::with(['comments', 'votes'])->findOrFail($id);
-        return response()->json($post, 200);
-    }
+{
+    $post = Post::with(['user', 'category', 'comments', 'votes'])->findOrFail($id);
+    return view('posts.show', compact('post'));
+}
 
     public function update(Request $request, $id)
     {

@@ -9,12 +9,6 @@
     color: rgb(182, 83, 193);
 }
 
-body {
-    background-image: url('/images/community background.jpg');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-}
 
 .custom-primary-btn {
     background-color: #cf65bb; /* Example color */
