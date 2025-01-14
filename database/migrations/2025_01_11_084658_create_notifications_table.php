@@ -6,11 +6,6 @@ use Illuminate\Support\Facades\Schema;
 
 class CreateNotificationsTable extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
     public function up()
     {
         Schema::create('notifications', function (Blueprint $table) {
@@ -20,16 +15,14 @@ class CreateNotificationsTable extends Migration
             $table->boolean('is_read')->default(false);
             $table->timestamps();
 
-            // Foreign key reference to users.id
+            // Foreign key reference
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+
+            // Index for efficient unread notifications query
+            $table->index('is_read');
         });
     }
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
     public function down()
     {
         Schema::dropIfExists('notifications');

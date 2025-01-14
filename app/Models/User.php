@@ -26,21 +26,21 @@ class User extends Authenticatable
 
     public function posts()
     {
-        return $this->hasMany(Post::class, 'userId');
+        return $this->hasMany(Post::class, 'user_id'); // Adjusted to match your migrations
     }
 
     public function comments()
     {
-        return $this->hasMany(Comment::class, 'userId');
+        return $this->hasMany(Comment::class, 'user_id');
     }
 
     public function votes()
     {
-        return $this->hasMany(Vote::class, 'userId');
+        return $this->hasMany(Vote::class, 'user_id');
     }
 
     public function notifications()
     {
-        return $this->hasMany(Notification::class, 'userId');
+        return $this->hasMany(Notification::class, 'user_id');
     }
 }

@@ -9,8 +9,12 @@ class Post extends Model
 {
     use HasFactory;
 
+    protected $primaryKey = 'postId'; // Set the primary key
+    public $incrementing = true; // Ensure primary key auto-increments
+    protected $keyType = 'int'; // Set the primary key type
+
     protected $fillable = [
-        'userId',
+        'user_id',
         'categoryId',
         'title',
         'description',
@@ -18,7 +22,7 @@ class Post extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class, 'userId');
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     public function category()
@@ -28,11 +32,11 @@ class Post extends Model
 
     public function comments()
     {
-        return $this->hasMany(Comment::class, 'postId');
+        return $this->hasMany(Comment::class, 'post_id');
     }
 
     public function votes()
     {
-        return $this->hasMany(Vote::class, 'postId');
+        return $this->hasMany(Vote::class, 'post_id');
     }
 }

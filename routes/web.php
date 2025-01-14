@@ -20,3 +20,16 @@ Route::get('register', function () {
 })->name('register');
 
 Route::post('register', [UserController::class, 'register']); // Handle signup form submission
+
+// Authenticated Routes for User Profile Management
+Route::middleware('auth')->group(function() {
+    Route::get('user/profile', function () {
+        return view('user.profile'); // Show the profile page
+    })->name('user.profile');
+    
+    Route::get('user/dashboard', function () {
+        return view('user.dashboard'); // Show user dashboard page
+    })->name('user.dashboard');
+
+    // Optional: Profile edit and change password routes could go here as needed
+});
