@@ -10,7 +10,7 @@ class CreateCategoriesTable extends Migration
     {
         Schema::create('categories', function (Blueprint $table) {
             $table->bigIncrements('categoryId'); // Primary key
-            $table->string('name', 50)->unique();
+            $table->string('name', 50);
             $table->timestamps();
         });
     }
