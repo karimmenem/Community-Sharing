@@ -6,58 +6,32 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\AdminController;
-use App\Http\Controllers\VoteController; // Import VoteController for voting functionality
+use App\Http\Controllers\VoteController;
 
-Route::get('/', [HomeController::class, 'index'])->name('home'); // Home route
+Route::get('/', [HomeController::class, 'index'])->name('home');
 
-// Login Routes
-Route::get('login', function () {
-    return view('auth.login'); // Show the login form
-})->name('login');
+// Authentication
+Route::get('login', fn() => view('auth.login'))->name('login');
+Route::post('login', [UserController::class, 'login']);
+Route::post('logout', fn() => Auth::logout() && request()->session()->invalidate() && request()->session()->regenerateToken() && redirect()->route('home'))->name('logout');
+Route::get('register', fn() => view('auth.signup'))->name('register');
+Route::post('register', [UserController::class, 'register']);
 
-Route::post('login', [UserController::class, 'login']); // Handle login form submission
-
-// Logout Route
-Route::post('logout', function () {
-    Auth::logout();
-    request()->session()->invalidate();
-    request()->session()->regenerateToken();
-    return redirect()->route('home'); // Redirect to home page after logout
-})->name('logout');
-
-// Register Routes
-Route::get('register', function () {
-    return view('auth.signup'); // Show the signup form
-})->name('register');
-
-Route::post('register', [UserController::class, 'register']); // Handle signup form submission
-
-// Authenticated Routes for User Profile Management
+// Authenticated Routes
 Route::middleware('auth')->group(function () {
-    // Posts
-    Route::get('posts', [PostController::class, 'index'])->name('posts.index'); // Posts Index Page
-    Route::get('posts/create', [PostController::class, 'create'])->name('posts.create'); // Create Post Page
-    Route::post('posts', [PostController::class, 'store'])->name('posts.store'); // Store Post
-    Route::get('posts/{id}', [PostController::class, 'show'])->name('posts.show'); // Show Single Post
-    Route::get('posts/{id}/edit', [PostController::class, 'edit'])->name('posts.edit'); // Edit Post Page
-    Route::put('posts/{id}', [PostController::class, 'update'])->name('posts.update'); // Update Post
-    Route::delete('posts/{id}', [PostController::class, 'destroy'])->name('posts.destroy'); // Delete Post
+    // Using resource route for posts
+    Route::resource('posts', PostController::class);
 
-    // Voting functionality
-    Route::post('posts/{id}/vote/upvote', [VoteController::class, 'upvote'])->name('posts.vote.upvote'); // Upvote a post
-    Route::post('posts/{id}/vote/downvote', [VoteController::class, 'downvote'])->name('posts.vote.downvote'); // Downvote a post
-
-    // User Profile
-    Route::get('user/profile', function () {
-        return view('user.profile'); // Show the profile page
-    })->name('user.profile');
-
-    Route::get('user/dashboard', function () {
-        return view('user.dashboard'); // Show user dashboard page
-    })->name('user.dashboard');
+    // Correct routes for voting
+    Route::post('/posts/{post}/upvote', [VoteController::class, 'upvote'])->name('posts.vote.upvote');
+    Route::post('/posts/{post}/downvote', [VoteController::class, 'downvote'])->name('posts.vote.downvote');
+    Route::delete('/posts/{post}/vote', [VoteController::class, 'removeVote'])->name('posts.vote.remove');
+    
+    Route::get('user/profile', fn() => view('user.profile'))->name('user.profile');
+    Route::get('user/dashboard', fn() => view('user.dashboard'))->name('user.dashboard');
 });
 
-// Admin Routes (Using RoleMiddleware)
+// Admin Routes
 Route::middleware(['auth', 'role:Admin'])->group(function () {
     Route::get('admin/dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
     Route::get('admin/manage-users', [AdminController::class, 'manageUsers'])->name('admin.manageUsers');

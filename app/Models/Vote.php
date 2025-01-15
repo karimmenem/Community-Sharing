@@ -9,9 +9,9 @@ class Vote extends Model
 {
     use HasFactory;
 
-    protected $primaryKey = 'voteId'; // Set the primary key
-    public $incrementing = true; // Ensure primary key auto-increments
-    protected $keyType = 'int'; // Set the primary key type
+    protected $primaryKey = 'voteId'; // Primary key
+    public $incrementing = true; // Auto-incrementing key
+    protected $keyType = 'int'; // Integer primary key
 
     protected $fillable = [
         'post_id',
@@ -21,11 +21,11 @@ class Vote extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(User::class, 'user_id', 'id');
     }
 
     public function post()
     {
-        return $this->belongsTo(Post::class, 'post_id');
+        return $this->belongsTo(Post::class, 'post_id', 'postId'); // Explicit foreign key and referenced key
     }
 }
