@@ -12,14 +12,14 @@ class CreateVotesTable extends Migration
             $table->bigIncrements('voteId'); // Primary key
             $table->unsignedBigInteger('post_id'); // Foreign key to posts table
             $table->unsignedBigInteger('user_id'); // Foreign key to users table
-            $table->boolean('vote_type'); // Upvote/Downvote
+            $table->boolean('vote_type'); // Vote type: true for upvote, false for downvote
             $table->timestamps();
 
             // Foreign key constraints
             $table->foreign('post_id')->references('postId')->on('posts')->onDelete('cascade');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
 
-            // Unique constraint
+            // Ensure each user can vote only once per post
             $table->unique(['post_id', 'user_id']);
         });
     }
@@ -29,4 +29,3 @@ class CreateVotesTable extends Migration
         Schema::dropIfExists('votes');
     }
 }
-

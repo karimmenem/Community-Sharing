@@ -27,21 +27,25 @@ class UserController extends Controller
     }
 
     public function login(Request $request)
-    {
-        $credentials = $request->validate([
-            'email' => 'required|email',
-            'password' => 'required',
-        ]);
-    
-        if (!Auth::attempt($credentials)) {
-            return response()->json(['message' => 'Invalid credentials'], 401);
+{
+    $credentials = $request->only('email', 'password');
+
+    if (Auth::attempt($credentials)) {
+        $request->session()->regenerate();
+
+        // Redirect based on role
+        if (Auth::user()->role === 'Admin') {
+            return redirect()->route('admin.dashboard');
         }
-    
-        $request->session()->regenerate(); // Prevent session fixation attacks
-    
-        // Redirect to posts.index route
+
         return redirect()->route('posts.index');
     }
+
+    return back()->withErrors([
+        'email' => 'The provided credentials do not match our records.',
+    ]);
+}
+
     
 
     // Get User Profile
