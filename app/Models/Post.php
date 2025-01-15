@@ -9,10 +9,11 @@ class Post extends Model
 {
     use HasFactory;
 
-    protected $primaryKey = 'postId'; // Set the primary key
-    public $incrementing = true; // Ensure primary key auto-increments
-    protected $keyType = 'int'; // Set the primary key type
+    protected $primaryKey = 'postId'; // Specify the primary key
+    public $incrementing = true; // Enable auto-increment for the primary key
+    protected $keyType = 'int'; // Define the primary key type
 
+    // Allow mass assignment for the specified attributes
     protected $fillable = [
         'user_id',
         'categoryId',
@@ -20,23 +21,35 @@ class Post extends Model
         'description',
     ];
 
+    /**
+     * Relationship with the User model.
+     */
     public function user()
     {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(User::class, 'user_id', 'id'); // Ensure proper foreign and local keys
     }
 
+    /**
+     * Relationship with the Category model.
+     */
     public function category()
     {
-        return $this->belongsTo(Category::class, 'categoryId');
+        return $this->belongsTo(Category::class, 'categoryId', 'categoryId'); // Use the correct primary key
     }
 
+    /**
+     * Relationship with the Comment model.
+     */
     public function comments()
     {
-        return $this->hasMany(Comment::class, 'post_id');
+        return $this->hasMany(Comment::class, 'post_id', 'postId'); // Ensure proper foreign and local keys
     }
 
+    /**
+     * Relationship with the Vote model.
+     */
     public function votes()
     {
-        return $this->hasMany(Vote::class, 'post_id');
+        return $this->hasMany(Vote::class, 'post_id', 'postId'); // Ensure proper foreign and local keys
     }
 }

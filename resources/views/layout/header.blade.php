@@ -20,7 +20,7 @@
 
     <!-- Middle Links (Home, Dashboard, Create Post) -->
     <div class="d-flex mx-auto">
-      <a href="/" class="nav-link text-white mx-4" style="font-size: 22px;">Home</a>
+      <a href="/posts" class="nav-link text-white mx-4" style="font-size: 22px;">Home</a>
       <a href="/dashboard" class="nav-link text-white mx-4" style="font-size: 22px;">Dashboard</a>
       <a href="/create-post" class="nav-link text-white mx-4" style="font-size: 22px;">Create Post</a>
     </div>
