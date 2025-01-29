@@ -10,33 +10,51 @@ use Illuminate\Support\Facades\Storage;
 class PostController extends Controller
 {
     public function index()
-    {
-        // Eager load user, category, and votes
-        $posts = Post::with(['user', 'category', 'votes'])->get();
-        return view('posts.index', compact('posts'));
-    }
+{
+    // Fetch posts with relationships
+    $posts = Post::with(['user', 'category', 'votes'])->get();
 
-    public function store(Request $request)
+
+    return view('posts.index', compact('posts'));
+}
+
+
+public function store(Request $request)
 {
     $validated = $request->validate([
-        'user_id' => 'required|exists:users,id',
         'categoryId' => 'required|exists:categories,categoryId',
         'title' => 'required|string|max:255',
         'description' => 'required|string',
-        'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // 2MB max
+        'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
     ]);
 
-    // Handle image upload
+    // Debug: Show validated data before saving
+    logger('Validated Data:', $validated);
+
+    $validated['user_id'] = auth()->id();
+
     if ($request->hasFile('image')) {
+        logger('Image file detected.');
         $path = $request->file('image')->store('posts', 'public');
+        logger('Image stored at:', ['path' => $path]);
         $validated['image'] = $path;
+    } else {
+        logger('No image file uploaded.');
     }
 
     $post = Post::create($validated);
 
-    // Redirect to posts.index (home page) after creating the post
+    if (!$post) {
+        logger('Post creation failed.');
+        return back()->with('error', 'Failed to create post.');
+    }
+
+    logger('Post created successfully:', ['post' => $post]);
     return redirect()->route('posts.index')->with('success', 'Post created!');
 }
+
+    
+
 
     public function show(Post $post)
     {

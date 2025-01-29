@@ -46,6 +46,10 @@ Route::middleware(['auth', 'role:Admin'])->group(function () {
     Route::get('admin/dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
     Route::get('admin/manage-users', [AdminController::class, 'manageUsers'])->name('admin.manageUsers');
     Route::get('admin/manage-posts', [AdminController::class, 'managePosts'])->name('admin.managePosts');
+    Route::delete('admin/delete-user/{id}', [AdminController::class, 'deleteUser'])->name('admin.deleteUser');
+    Route::delete('admin/delete-post/{id}', [AdminController::class, 'deletePost'])->name('admin.deletePost');
+
+
 });
 
 // Search Route

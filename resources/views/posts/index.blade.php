@@ -11,8 +11,8 @@
 
                     <!-- Post Thumbnail -->
                     @if ($post->image)
-                        <img src="{{ $post->imageUrl }}" alt="Post Thumbnail" class="img-thumbnail mb-2" style="max-width: 200px;">
-                    @endif
+                <img src="{{ $post->imageUrl }}" alt="Post Image" class="img-thumbnail mb-2" style="max-width: 200px;">
+            @endif
 
                     <p class="card-text">{{ Str::limit($post->description, 100) }}</p>
                     <p class="card-text">
