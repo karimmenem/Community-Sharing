@@ -29,14 +29,14 @@ class PostController extends Controller
         return response()->json(['message' => 'Post created successfully', 'post' => $post], 201);
     }
 
-    public function show($id)
+    public function show(Post $post)
     {
-        // Eager load user, category, comments, and votes
-        $post = Post::with(['user', 'category', 'comments', 'votes'])->findOrFail($id);
+        // Eager load relationships
+        $post->load(['user', 'category', 'comments', 'votes']);
         return view('posts.show', compact('post'));
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, Post $post)
     {
         // Validate updated data
         $validated = $request->validate([
@@ -44,19 +44,15 @@ class PostController extends Controller
             'description' => 'required|string',
         ]);
 
-        // Find the post by ID and update it
-        $post = Post::findOrFail($id);
+        // Update the post
         $post->update($validated);
-
         return response()->json(['message' => 'Post updated successfully', 'post' => $post], 200);
     }
 
-    public function destroy($id)
+    public function destroy(Post $post)
     {
-        // Find the post and delete it
-        $post = Post::findOrFail($id);
+        // Delete the post
         $post->delete();
-
         return response()->json(['message' => 'Post deleted successfully'], 200);
     }
 }

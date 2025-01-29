@@ -10,7 +10,9 @@
                     <h5 class="card-title">{{ $post->title }}</h5>
                     <p class="card-text">{{ Str::limit($post->description, 100) }}</p>
                     <p class="card-text">
-                        <small class="text-muted">Category: {{ $post->category->name }}</small><br>
+                        <small class="text-muted">
+                            Category: {{ $post->category?->name ?? 'Uncategorized' }}
+                        </small><br>
                         <small class="text-muted">Author: {{ $post->user->username }}</small>
                     </p>
 
@@ -21,7 +23,7 @@
                         <span class="text-danger">Downvotes: {{ $post->votes->where('vote_type', false)->count() }}</span>
                     </p>
 
-                    <!-- Voting Buttons (Visible to all users) -->
+                    <!-- Voting Buttons -->
                     @php
                         $userVote = $post->votes->firstWhere('user_id', auth()->id());
                     @endphp
@@ -56,9 +58,7 @@
                         </form>
                     @endif
 
-                    <!-- View Post Button -->
                     <a href="{{ route('posts.show', $post) }}" class="btn btn-primary btn-sm">View Post</a>
-
                 </div>
             </div>
         @empty

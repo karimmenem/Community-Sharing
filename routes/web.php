@@ -13,7 +13,7 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 // Authentication
 Route::get('login', fn() => view('auth.login'))->name('login');
 Route::post('login', [UserController::class, 'login']);
-Route::post('logout', fn() => Auth::logout() && request()->session()->invalidate() && request()->session()->regenerateToken() && redirect()->route('home'))->name('logout');
+Route::post('logout', [UserController::class, 'logout'])->name('logout');
 Route::get('register', fn() => view('auth.signup'))->name('register');
 Route::post('register', [UserController::class, 'register']);
 
@@ -23,9 +23,10 @@ Route::middleware('auth')->group(function () {
     Route::resource('posts', PostController::class);
 
     // Correct routes for voting
-    Route::post('/posts/{post}/upvote', [VoteController::class, 'upvote'])->name('posts.vote.upvote');
-    Route::post('/posts/{post}/downvote', [VoteController::class, 'downvote'])->name('posts.vote.downvote');
-    Route::delete('/posts/{post}/vote', [VoteController::class, 'removeVote'])->name('posts.vote.remove');
+    // In web.php (Updated)
+Route::post('/posts/{post}/upvote', [VoteController::class, 'upvote'])->name('posts.vote.upvote');
+Route::post('/posts/{post}/downvote', [VoteController::class, 'downvote'])->name('posts.vote.downvote');
+Route::delete('/posts/{post}/vote', [VoteController::class, 'removeVote'])->name('posts.vote.remove');
     
     Route::get('user/profile', fn() => view('user.profile'))->name('user.profile');
     Route::get('user/dashboard', fn() => view('user.dashboard'))->name('user.dashboard');

@@ -115,4 +115,12 @@ class UserController extends Controller
         $posts = $user->posts; // Assuming a relationship named "posts"
         return response()->json(['posts' => $posts], 200);
     }
+
+    public function logout()
+{
+    Auth::logout();
+    request()->session()->invalidate();
+    request()->session()->regenerateToken();
+    return redirect()->route('home');
+}
 }
