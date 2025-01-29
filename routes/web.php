@@ -23,7 +23,8 @@ Route::post('register', [UserController::class, 'register']);
 Route::middleware('auth')->group(function () {
     // Post Routes
     Route::resource('posts', PostController::class);
-
+    
+    Route::get('/create-post', [PostController::class, 'create'])->name('posts.create');
     // Voting Routes
     Route::post('/posts/{post}/upvote', [VoteController::class, 'upvote'])->name('posts.vote.upvote');
     Route::post('/posts/{post}/downvote', [VoteController::class, 'downvote'])->name('posts.vote.downvote');
