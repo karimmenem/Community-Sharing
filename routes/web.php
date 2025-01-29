@@ -23,8 +23,7 @@ Route::post('register', [UserController::class, 'register']);
 Route::middleware('auth')->group(function () {
     // Post Routes
     Route::resource('posts', PostController::class);
-    
-    Route::get('/create-post', [PostController::class, 'create'])->name('posts.create');
+
     // Voting Routes
     Route::post('/posts/{post}/upvote', [VoteController::class, 'upvote'])->name('posts.vote.upvote');
     Route::post('/posts/{post}/downvote', [VoteController::class, 'downvote'])->name('posts.vote.downvote');
@@ -35,8 +34,11 @@ Route::middleware('auth')->group(function () {
     Route::delete('/comments/{comment}', [CommentController::class, 'destroy'])->name('comments.destroy');
 
     // User Profile Routes
-    Route::get('user/profile', fn() => view('user.profile'))->name('user.profile');
-    Route::get('user/dashboard', fn() => view('user.dashboard'))->name('user.dashboard');
+    Route::get('user/dashboard', [UserController::class, 'dashboard'])->name('user.dashboard');
+    Route::get('user/edit-profile', [UserController::class, 'editProfile'])->name('user.editProfile');
+    Route::post('user/update-profile', [UserController::class, 'updateProfile'])->name('user.updateProfile');
+    Route::get('user/change-password', [UserController::class, 'showChangePasswordForm'])->name('user.changePasswordForm');
+    Route::post('user/change-password', [UserController::class, 'changePassword'])->name('user.changePassword');
 });
 
 // Admin Routes

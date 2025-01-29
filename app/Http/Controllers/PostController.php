@@ -17,26 +17,26 @@ class PostController extends Controller
     }
 
     public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'user_id' => 'required|exists:users,id',
-            'categoryId' => 'required|exists:categories,categoryId',
-            'title' => 'required|string|max:255',
-            'description' => 'required|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // 2MB max
-        ]);
+{
+    $validated = $request->validate([
+        'user_id' => 'required|exists:users,id',
+        'categoryId' => 'required|exists:categories,categoryId',
+        'title' => 'required|string|max:255',
+        'description' => 'required|string',
+        'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // 2MB max
+    ]);
 
-        // Handle image upload
-        if ($request->hasFile('image')) {
-            $path = $request->file('image')->store('posts', 'public');
-            $validated['image'] = $path;
-        }
-
-        $post = Post::create($validated);
-
-        // Redirect to posts.index (home page) after creating the post
-        return redirect()->route('home')->with('success', 'Post created!');
+    // Handle image upload
+    if ($request->hasFile('image')) {
+        $path = $request->file('image')->store('posts', 'public');
+        $validated['image'] = $path;
     }
+
+    $post = Post::create($validated);
+
+    // Redirect to posts.index (home page) after creating the post
+    return redirect()->route('posts.index')->with('success', 'Post created!');
+}
 
     public function show(Post $post)
     {

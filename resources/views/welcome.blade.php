@@ -7,25 +7,22 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-
-
 </head>
 <body style="background-image: url('/images/community background.jpg'); background-size: cover; background-position: center; background-repeat: no-repeat;">
 
 <div class="px-4 py-5 my-5 text-center">
     <h1 class="display-5 fw-bold ShareTitle">Share Sphere</h1>
     <div class="col-lg-6 mx-auto">
-      <p class="lead mb-4 welcomePar">Join a community where knowledge flows freely. Share your experiences, solve problems together, and grow with like-minded individuals. Whether you're seeking advice or offering insights, ShareSphere is the space to exchange ideas and make a difference.</p>
-      <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
-      <button type="button" class="btn btn-primary btn-lg px-4 gap-3 custom-primary-btn" data-bs-toggle="modal" data-bs-target="#loginModal">Login</button>
-      <button type="button" class="btn btn-outline-secondary btn-lg px-4 custom-secondary-btn" data-bs-toggle="modal" data-bs-target="#signupModal">Sign Up</button>
-
-
-      </div>
+        <p class="lead mb-4 welcomePar">Join a community where knowledge flows freely. Share your experiences, solve problems together, and grow with like-minded individuals. Whether you're seeking advice or offering insights, ShareSphere is the space to exchange ideas and make a difference.</p>
+        <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+            <button type="button" class="btn btn-primary btn-lg px-4 gap-3 custom-primary-btn" data-bs-toggle="modal" data-bs-target="#loginModal">Login</button>
+            <button type="button" class="btn btn-outline-secondary btn-lg px-4 custom-secondary-btn" data-bs-toggle="modal" data-bs-target="#signupModal">Sign Up</button>
+        </div>
     </div>
-  </div>
+</div>
 
-  <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+<!-- Login Modal -->
+<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -39,6 +36,7 @@
     </div>
 </div>
 
+<!-- Signup Modal -->
 <div class="modal fade" id="signupModal" tabindex="-1" aria-labelledby="signupModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -55,6 +53,5 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"></script>
-    
 </body>
 </html>

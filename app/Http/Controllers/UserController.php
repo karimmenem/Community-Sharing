@@ -49,72 +49,66 @@ class UserController extends Controller
     
 
     // Get User Profile
-    public function getUserProfile($id)
-    {
-        $user = User::find($id);
-        if (!$user) {
-            return response()->json(['message' => 'User not found'], 404);
-        }
+    // In UserController.php
 
-        return response()->json(['user' => $user], 200);
+// Show User Dashboard
+public function dashboard()
+{
+    $user = auth()->user();
+    $posts = $user->posts;
+    $comments = $user->comments;
+    return view('user.dashboard', compact('user', 'posts', 'comments'));
+}
+
+// Show Profile Edit Form
+public function editProfile()
+{
+    $user = auth()->user();
+    return view('user.edit-profile', compact('user'));
+}
+
+// Update Profile
+public function updateProfile(Request $request)
+{
+    $user = auth()->user();
+
+    $validated = $request->validate([
+        'username' => 'required|string|max:50|unique:users,username,' . $user->id,
+        'email' => 'required|string|email|max:100|unique:users,email,' . $user->id,
+    ]);
+
+    $user->update($validated);
+    return redirect()->route('user.dashboard')->with('success', 'Profile updated successfully.');
+}
+
+// Show Change Password Form
+public function showChangePasswordForm()
+{
+    return view('user.change-password');
+}
+
+// Change Password
+public function changePassword(Request $request)
+{
+    $user = auth()->user();
+
+    $validated = $request->validate([
+        'current_password' => 'required|string',
+        'new_password' => 'required|string|min:8|confirmed',
+    ]);
+
+    // Verify current password
+    if (!Hash::check($validated['current_password'], $user->password)) {
+        return back()->withErrors(['current_password' => 'The current password is incorrect.']);
     }
 
-    // Update User Profile
-    public function updateUserProfile(Request $request, $id)
-    {
-        $validated = $request->validate([
-            'username' => 'required|string|max:50|unique:users,username,' . $id,
-            'email' => 'required|string|email|max:100|unique:users,email,' . $id,
-        ]);
+    // Update password
+    $user->update([
+        'password' => Hash::make($validated['new_password']),
+    ]);
 
-        $user = User::find($id);
-        if (!$user) {
-            return response()->json(['message' => 'User not found'], 404);
-        }
-
-        // Update the user details
-        $user->update($validated);
-
-        return response()->json(['message' => 'User profile updated successfully', 'user' => $user], 200);
-    }
-
-    // Change Password
-    public function changePassword(Request $request, $id)
-    {
-        $validated = $request->validate([
-            'current_password' => 'required|string',
-            'new_password' => 'required|string|min:8|confirmed',
-        ]);
-
-        $user = User::find($id);
-        if (!$user) {
-            return response()->json(['message' => 'User not found'], 404);
-        }
-
-        // Verify the current password
-        if (!Hash::check($validated['current_password'], $user->password)) {
-            return response()->json(['message' => 'Current password is incorrect'], 400);
-        }
-
-        // Update the password
-        $user->update([
-            'password' => Hash::make($validated['new_password']),
-        ]);
-
-        return response()->json(['message' => 'Password changed successfully'], 200);
-    }
-
-    // Get User Posts (Assuming the user has a "posts" relationship)
-    public function getUserPosts($id)
-    {
-        $user = User::find($id);
-        if (!$user) {
-            return response()->json(['message' => 'User not found'], 404);
-        }
-
-        $posts = $user->posts; // Assuming a relationship named "posts"
-        return response()->json(['posts' => $posts], 200);
-    }
+    return redirect()->route('user.dashboard')->with('success', 'Password changed successfully.');
+}
 
     public function logout()
 {
