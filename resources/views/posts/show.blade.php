@@ -7,6 +7,13 @@
         <p><strong>Author:</strong> {{ $post->user->username }}</p>
         <p>{{ $post->description }}</p>
 
+        <!-- Post Image -->
+        @if ($post->image)
+            <div class="mt-4">
+                <img src="{{ $post->imageUrl }}" alt="Post Image" class="img-fluid rounded">
+            </div>
+        @endif
+
         <!-- Vote Counts -->
         <div class="mt-4">
             <strong>Votes:</strong>

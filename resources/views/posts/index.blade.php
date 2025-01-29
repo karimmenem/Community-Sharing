@@ -8,6 +8,12 @@
             <div class="card mb-3">
                 <div class="card-body">
                     <h5 class="card-title">{{ $post->title }}</h5>
+
+                    <!-- Post Thumbnail -->
+                    @if ($post->image)
+                        <img src="{{ $post->imageUrl }}" alt="Post Thumbnail" class="img-thumbnail mb-2" style="max-width: 200px;">
+                    @endif
+
                     <p class="card-text">{{ Str::limit($post->description, 100) }}</p>
                     <p class="card-text">
                         <small class="text-muted">
