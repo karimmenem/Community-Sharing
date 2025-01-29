@@ -28,7 +28,10 @@
 
     <!-- Search Bar and Logout on the Right -->
     <div class="d-flex">
-      <input type="search" class="form-control me-2" style="background-color: white; color: purple;" placeholder="Search..." aria-label="Search">
+    <form action="{{ route('posts.search') }}" method="GET" class="d-flex">
+    <input type="search" name="query" class="form-control me-2" placeholder="Search..." aria-label="Search">
+    <button type="submit" class="btn btn-outline-light">Search</button>
+</form>
       <form action="{{ route('logout') }}" method="POST">
         @csrf
         <button type="submit" class="btn btn-outline-light">Logout</button>

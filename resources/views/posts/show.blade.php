@@ -48,5 +48,43 @@
                 <button type="submit" class="btn btn-secondary btn-sm">Remove Vote</button>
             </form>
         @endif
+
+        <!-- Comment Form -->
+        <div class="mt-4">
+            <form action="{{ route('comments.store', $post) }}" method="POST">
+                @csrf
+                <div class="mb-3">
+                    <label for="content" class="form-label">Add a Comment</label>
+                    <textarea class="form-control" id="content" name="content" rows="3" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        </div>
+
+        <!-- Display Comments -->
+        <div class="mt-4">
+            <h3>Comments</h3>
+            @forelse ($post->comments as $comment)
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <p class="card-text">{{ $comment->content }}</p>
+                        <p class="card-text">
+                            <small class="text-muted">
+                                By: {{ $comment->user->username }} | {{ $comment->created_at->diffForHumans() }}
+                            </small>
+                        </p>
+                        @if ($comment->user_id === auth()->id())
+                            <form action="{{ route('comments.destroy', $comment) }}" method="POST" style="display: inline;">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                            </form>
+                        @endif
+                    </div>
+                </div>
+            @empty
+                <p>No comments yet.</p>
+            @endforelse
+        </div>
     </div>
 @endsection

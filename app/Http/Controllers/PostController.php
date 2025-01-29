@@ -15,19 +15,24 @@ class PostController extends Controller
     }
 
     public function store(Request $request)
-    {
-        // Validate incoming data
-        $validated = $request->validate([
-            'user_id' => 'required|exists:users,id',
-            'categoryId' => 'required|exists:categories,categoryId',
-            'title' => 'required|string|max:255',
-            'description' => 'required|string',
-        ]);
+{
+    $validated = $request->validate([
+        'user_id' => 'required|exists:users,id',
+        'categoryId' => 'required|exists:categories,categoryId',
+        'title' => 'required|string|max:255',
+        'description' => 'required|string',
+        'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // 2MB max
+    ]);
 
-        // Create the new post
-        $post = Post::create($validated);
-        return response()->json(['message' => 'Post created successfully', 'post' => $post], 201);
+    // Handle image upload
+    if ($request->hasFile('image')) {
+        $path = $request->file('image')->store('posts', 'public');
+        $validated['image'] = $path;
     }
+
+    $post = Post::create($validated);
+    return redirect()->route('posts.show', $post)->with('success', 'Post created!');
+}
 
     public function show(Post $post)
     {
@@ -37,17 +42,26 @@ class PostController extends Controller
     }
 
     public function update(Request $request, Post $post)
-    {
-        // Validate updated data
-        $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'description' => 'required|string',
-        ]);
+{
+    $validated = $request->validate([
+        'title' => 'required|string|max:255',
+        'description' => 'required|string',
+        'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+    ]);
 
-        // Update the post
-        $post->update($validated);
-        return response()->json(['message' => 'Post updated successfully', 'post' => $post], 200);
+    // Handle image update
+    if ($request->hasFile('image')) {
+        // Delete old image if exists
+        if ($post->image) {
+            Storage::disk('public')->delete($post->image);
+        }
+        $path = $request->file('image')->store('posts', 'public');
+        $validated['image'] = $path;
     }
+
+    $post->update($validated);
+    return redirect()->route('posts.show', $post)->with('success', 'Post updated!');
+}
 
     public function destroy(Post $post)
     {
@@ -55,4 +69,19 @@ class PostController extends Controller
         $post->delete();
         return response()->json(['message' => 'Post deleted successfully'], 200);
     }
+
+    public function search(Request $request)
+{
+    $query = $request->input('query');
+
+    $posts = Post::with(['user', 'category', 'votes'])
+        ->where('title', 'like', "%$query%")
+        ->orWhere('description', 'like', "%$query%")
+        ->orWhereHas('user', function ($q) use ($query) {
+            $q->where('username', 'like', "%$query%");
+        })
+        ->get();
+
+    return view('posts.index', compact('posts'));
+}
 }

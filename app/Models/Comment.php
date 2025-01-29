@@ -9,10 +9,7 @@ class Comment extends Model
 {
     use HasFactory;
 
-    protected $primaryKey = 'commentId'; // Set the primary key
-    public $incrementing = true; // Ensure primary key auto-increments
-    protected $keyType = 'int'; // Set the primary key type
-
+    protected $primaryKey = 'commentId';
     protected $fillable = [
         'post_id',
         'user_id',
@@ -26,6 +23,6 @@ class Comment extends Model
 
     public function post()
     {
-        return $this->belongsTo(Post::class, 'post_id');
+        return $this->belongsTo(Post::class, 'post_id', 'postId'); // Fix here
     }
 }
