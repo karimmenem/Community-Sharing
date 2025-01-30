@@ -9,10 +9,13 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\VoteController;
 use App\Http\Controllers\CommentController;
 
+Auth::routes();
 // Home Route
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
 // Authentication Routes
+Auth::routes(['verify' => true]); // Enable email verification and password reset routes
+
 Route::get('login', fn() => view('auth.login'))->name('login');
 Route::post('login', [UserController::class, 'login']);
 Route::post('logout', [UserController::class, 'logout'])->name('logout');
@@ -20,7 +23,7 @@ Route::get('register', fn() => view('auth.signup'))->name('register');
 Route::post('register', [UserController::class, 'register']);
 
 // Authenticated Routes
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'verified'])->group(function () {
     // Post Routes
     Route::resource('posts', PostController::class);
 
@@ -42,15 +45,17 @@ Route::middleware('auth')->group(function () {
 });
 
 // Admin Routes
+// Admin Routes
 Route::middleware(['auth', 'role:Admin'])->group(function () {
     Route::get('admin/dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
     Route::get('admin/manage-users', [AdminController::class, 'manageUsers'])->name('admin.manageUsers');
     Route::get('admin/manage-posts', [AdminController::class, 'managePosts'])->name('admin.managePosts');
-    Route::delete('admin/delete-user/{id}', [AdminController::class, 'deleteUser'])->name('admin.deleteUser');
-    Route::delete('admin/delete-post/{id}', [AdminController::class, 'deletePost'])->name('admin.deletePost');
-
-
+    Route::delete('admin/delete-post/{post}', [AdminController::class, 'deletePost'])->name('admin.deletePost'); // Ensure this is correct
 });
 
 // Search Route
 Route::get('/search', [PostController::class, 'search'])->name('posts.search');
+
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

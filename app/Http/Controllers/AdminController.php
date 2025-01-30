@@ -39,11 +39,10 @@ class AdminController extends Controller
     }
 
     // Delete a Post
-    public function deletePost($id)
-{
-    $post = Post::findOrFail($id);
-    $post->delete();
-    return redirect()->route('admin.managePosts')->with('success', 'Post deleted successfully.');
-}
+    public function deletePost(Post $post) // Use route model binding
+    {
+        $post->delete();
+        return redirect()->route('admin.managePosts')->with('success', 'Post deleted successfully.');
+    }
 
 }
