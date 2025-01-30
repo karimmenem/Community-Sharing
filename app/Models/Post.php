@@ -12,7 +12,7 @@ class Post extends Model
     protected $primaryKey = 'postId';
     protected $fillable = [
         'user_id',
-        'category_id', // Changed from 'categoryId' for Laravel convention
+        'categoryId', 
         'title',
         'description',
         'image'
@@ -25,7 +25,7 @@ class Post extends Model
 
     public function category()
     {
-        return $this->belongsTo(Category::class, 'category_id');
+        return $this->belongsTo(Category::class, 'categoryId');
     }
 
     public function votes()

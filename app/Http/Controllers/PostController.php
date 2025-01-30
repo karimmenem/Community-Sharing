@@ -9,15 +9,40 @@ use Illuminate\Support\Facades\Storage;
 
 class PostController extends Controller
 {
-    public function index()
+    public function index(Request $request)
 {
-    $posts = Post::all(); // Fetch posts (adjust as needed)
-    return view('posts.index', compact('posts')); // Ensure this view exists
+    // Fetch all categories
+    $categories = Category::all();
+
+    // Start building the query for posts
+    $query = Post::with(['user', 'category', 'votes']);
+
+    // Apply category filter
+    if ($request->has('category') && $request->category != '') {
+        $query->where('categoryId', $request->category);
+    }
+
+    // Apply sorting
+    if ($request->has('sort')) {
+        if ($request->sort == 'newest') {
+            $query->orderBy('created_at', 'desc');
+        } elseif ($request->sort == 'popular') {
+            $query->withCount('votes')->orderBy('votes_count', 'desc');
+        }
+    }
+
+    // Paginate posts
+    $posts = $query->paginate(10); // Adjust the number as needed
+
+    // Return the view with posts and categories
+    return view('posts.index', compact('posts', 'categories'));
 }
+
 
 
 public function store(Request $request)
 {
+    // Validate incoming request
     $validated = $request->validate([
         'categoryId' => 'required|exists:categories,categoryId',
         'title' => 'required|string|max:255',
@@ -25,33 +50,26 @@ public function store(Request $request)
         'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
     ]);
 
-    // Debug: Show validated data before saving
+    // Debug: Log the validated data
     logger('Validated Data:', $validated);
 
+    // Manually add the user_id from authenticated user
     $validated['user_id'] = auth()->id();
 
+    // Handle image upload if there's one
     if ($request->hasFile('image')) {
-        logger('Image file detected.');
         $path = $request->file('image')->store('posts', 'public');
-        logger('Image stored at:', ['path' => $path]);
         $validated['image'] = $path;
-    } else {
-        logger('No image file uploaded.');
     }
 
+    // Create the post with the validated data
     $post = Post::create($validated);
 
-    if (!$post) {
-        logger('Post creation failed.');
-        return back()->with('error', 'Failed to create post.');
-    }
+    // Debug: Log the created post
+    logger('Created Post:', $post->toArray());
 
-    logger('Post created successfully:', ['post' => $post]);
     return redirect()->route('posts.index')->with('success', 'Post created!');
 }
-
-    
-
 
 public function show(Post $post)
 {

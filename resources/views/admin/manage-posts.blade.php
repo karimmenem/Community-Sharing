@@ -16,17 +16,15 @@
             <tbody>
                 @foreach($posts as $post)
                     <tr>
-                        <td>{{ $post->id }}</td>
+                        <td>{{ $post->postId }}</td>
                         <td>{{ $post->title }}</td>
                         <td>{{ $post->user->username }}</td>
                         <td>
-                        <form action="{{ route('admin.deletePost', $post->id) }}" method="POST">
-    @csrf
-    @method('DELETE')
-    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-</form>
-
-
+                            <form action="{{ route('admin.deletePost', ['id' => $post->postId]) }}" method="POST">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                            </form>
                         </td>
                     </tr>
                 @endforeach
