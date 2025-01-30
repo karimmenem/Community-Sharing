@@ -11,20 +11,15 @@ class PostsTableSeeder extends Seeder
 {
     public function run()
     {
-        // Get all user IDs
         $users = User::pluck('id')->toArray();
+        $categories = Category::pluck('id')->toArray(); // Ensure we're using `id` instead of `categoryId`
 
-        // Get all category IDs
-        $categories = Category::pluck('categoryId')->toArray();
-
-        // Create 500 fake posts
-        Post::factory()->count(500)->create([
-            'user_id' => function () use ($users) {
-                return $users[array_rand($users)];
-            },
-            'categoryId' => function () use ($categories) {
-                return $categories[array_rand($categories)];
-            },
-        ]);
+        // Create 500 fake posts and assign user_id and categoryId after creation
+        Post::factory()->count(500)->create()->each(function ($post) use ($users, $categories) {
+            $post->update([
+                'user_id' => $users[array_rand($users)],
+                'categoryId' => $categories[array_rand($categories)],
+            ]);
+        });
     }
 }

@@ -10,18 +10,21 @@ class CommentController extends Controller
 {
     // Store a new comment
     public function store(Request $request, Post $post)
-    {
-        $validated = $request->validate([
-            'content' => 'required|string|max:1000',
-        ]);
+{
+    $validated = $request->validate([
+        'content' => 'required|string|max:1000',
+    ]);
 
-        $comment = $post->comments()->create([
-            'user_id' => auth()->id(),
-            'content' => $validated['content'],
-        ]);
+    $comment = Comment::create([
+        'post_id' => $post->postId, // Ensure post_id is explicitly set
+        'user_id' => auth()->id(),
+        'content' => $validated['content'],
+    ]);
 
-        return back()->with('success', 'Comment added successfully.');
-    }
+    return back()->with('success', 'Comment added successfully.');
+}
+
+
 
     // Delete a comment
     public function destroy(Comment $comment)

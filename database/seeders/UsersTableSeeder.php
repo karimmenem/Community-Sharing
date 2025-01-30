@@ -10,7 +10,12 @@ class UsersTableSeeder extends Seeder
 {
     public function run()
     {
-        // Create 100 fake users
-        User::factory()->count(100)->create();
+        User::create([
+            'username' => 'testuser',
+            'email' => 'test@example.com',
+            'password' => Hash::make('password123'), // Ensure password is hashed
+            'role' => 'user',
+            'reputationPoints' => 0,
+        ]);
     }
 }

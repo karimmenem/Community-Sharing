@@ -11,17 +11,15 @@ class CommentsTableSeeder extends Seeder
 {
     public function run()
     {
-        // Get all posts and users
-        $posts = Post::pluck('postId')->toArray();
+        $posts = Post::pluck('postId')->toArray(); // Ensure referencing `postId`
         $users = User::pluck('id')->toArray();
 
         // Create 1000 random comments
-        for ($i = 0; $i < 1000; $i++) {
-            Comment::create([
+        Comment::factory()->count(1000)->create()->each(function ($comment) use ($posts, $users) {
+            $comment->update([
                 'post_id' => $posts[array_rand($posts)],
                 'user_id' => $users[array_rand($users)],
-                'content' => 'This is a random comment.',
             ]);
-        }
+        });
     }
 }

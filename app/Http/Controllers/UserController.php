@@ -44,6 +44,8 @@ class UserController extends Controller
             }
 
             return redirect()->route('posts.index');
+
+
         }
 
         return back()->withErrors([

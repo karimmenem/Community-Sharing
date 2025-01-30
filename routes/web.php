@@ -11,11 +11,14 @@ use App\Http\Controllers\CommentController;
 // Home Route
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
-// Authentication Routes (without email verification)
+// Authentication Routes
 Auth::routes();
 
-Route::get('login', fn() => view('auth.login'))->name('login');
-Route::post('login', [UserController::class, 'login']);
+// Ensure login redirects to posts.index
+Route::post('/login', [UserController::class, 'login'])->name('login');
+
+
+// Logout Route
 Route::post('logout', function () {
     Auth::logout();
     request()->session()->invalidate();
@@ -23,11 +26,18 @@ Route::post('logout', function () {
     return redirect()->route('home'); // Redirect to welcome.blade.php
 })->name('logout');
 
+// Registration Routes
 Route::get('register', fn() => view('auth.signup'))->name('register');
 Route::post('register', [UserController::class, 'register']);
 
 // Authenticated Routes
 Route::middleware('auth')->group(function () {
+    // Redirect after login to posts.index
+    Route::get('/dashboard', function () {
+        return redirect()->route('posts.index');
+    })->name('dashboard');
+    
+
     // Post Routes
     Route::resource('posts', PostController::class);
 
