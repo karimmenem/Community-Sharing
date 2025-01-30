@@ -1,5 +1,6 @@
 <?php
 
+
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\UserController;
@@ -7,50 +8,41 @@ use App\Http\Controllers\PostController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\VoteController;
 use App\Http\Controllers\CommentController;
+use Illuminate\Support\Facades\Auth;
 
 // Home Route
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
 // Authentication Routes
-Auth::routes();
-
-// Ensure login redirects to posts.index
 Route::post('/login', [UserController::class, 'login'])->name('login');
-
-
-// Logout Route
-Route::post('logout', function () {
+Route::post('/logout', function () {
     Auth::logout();
     request()->session()->invalidate();
     request()->session()->regenerateToken();
-    return redirect()->route('home'); // Redirect to welcome.blade.php
+    return redirect()->route('home');
 })->name('logout');
 
-// Registration Routes
-Route::get('register', fn() => view('auth.signup'))->name('register');
-Route::post('register', [UserController::class, 'register']);
+Route::get('/register', fn() => view('auth.signup'))->name('register');
+Route::post('/register', [UserController::class, 'register']);
 
 // Authenticated Routes
 Route::middleware('auth')->group(function () {
-    // Redirect after login to posts.index
     Route::get('/dashboard', function () {
-        return redirect()->route('posts.index');
+        return redirect()->route('posts.index'); // Redirect to posts.index
     })->name('dashboard');
-    
 
-    // Post Routes
     Route::resource('posts', PostController::class);
 
-    // Voting Routes
+    // Voting
     Route::post('/posts/{post}/upvote', [VoteController::class, 'upvote'])->name('posts.vote.upvote');
     Route::post('/posts/{post}/downvote', [VoteController::class, 'downvote'])->name('posts.vote.downvote');
     Route::delete('/posts/{post}/vote', [VoteController::class, 'removeVote'])->name('posts.vote.remove');
 
-    // Comment Routes
+    // Comments
     Route::post('/posts/{post}/comments', [CommentController::class, 'store'])->name('comments.store');
     Route::delete('/comments/{comment}', [CommentController::class, 'destroy'])->name('comments.destroy');
 
-    // User Profile Routes
+    // User Profile
     Route::get('user/dashboard', [UserController::class, 'dashboard'])->name('user.dashboard');
     Route::get('user/edit-profile', [UserController::class, 'editProfile'])->name('user.editProfile');
     Route::post('user/update-profile', [UserController::class, 'updateProfile'])->name('user.updateProfile');

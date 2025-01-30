@@ -12,47 +12,37 @@ class UserController extends Controller
 {
     public function register(Request $request)
     {
-        try {
-            $validated = $request->validate([
-                'username' => 'required|string|max:50|unique:users',
-                'email' => 'required|string|email|max:100|unique:users',
-                'password' => 'required|string|min:8|confirmed', // Ensure password confirmation
-            ]);
+        $validated = $request->validate([
+            'username' => 'required|string|max:50|unique:users',
+            'email' => 'required|string|email|max:100|unique:users',
+            'password' => 'required|string|min:8|confirmed', // Ensure password confirmation
+        ]);
 
-            // Hash the password after validation
-            $validated['password'] = Hash::make($validated['password']);
-            
-            // Create user with the validated data
-            $user = User::create($validated);
+        // Hash the password here after validation
+        $validated['password'] = Hash::make($validated['password']);
+        
+        // Create user with the validated data
+        $user = User::create($validated);
 
-            return response()->json(['message' => 'User registered successfully', 'user' => $user], 201);
-        } catch (ValidationException $e) {
-            return response()->json(['errors' => $e->errors()], 422);
-        }
+        return response()->json(['message' => 'User registered successfully', 'user' => $user], 201);
     }
 
     public function login(Request $request)
     {
-        $credentials = $request->only('email', 'password');
-
+        $credentials = $request->validate([
+            'email' => 'required|email',
+            'password' => 'required'
+        ]);
+    
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
-
-            // Redirect based on role
-            if (Auth::user()->role === 'Admin') {
-                return redirect()->route('admin.dashboard');
-            }
-
-            return redirect()->route('posts.index');
-
-
+            return redirect()->route('posts.index'); // Redirect to posts.index
         }
-
+    
         return back()->withErrors([
-            'email' => 'The provided credentials do not match our records.',
+            'email' => 'Invalid credentials. Please try again.',
         ]);
     }
-
     // Show User Dashboard
     public function dashboard()
     {
