@@ -22,24 +22,29 @@
     <!-- Middle Links (Home, Dashboard, Create Post) -->
     <div class="d-flex mx-auto">
       <a href="/posts" class="nav-link text-white mx-4" style="font-size: 22px;">Home</a>
-      <a href="{{ route('user.dashboard') }}" class="nav-link text-white mx-4" style="font-size: 22px;">Dashboard</a>
-      <a href="{{ route('posts.create') }}" class="nav-link text-white mx-4" style="font-size: 22px;">Create Post</a>
 
+      <!-- Conditional display of Dashboard link -->
+      @if(Auth::user() && Auth::user()->role === 'Admin')
+        <a href="{{ route('admin.dashboard') }}" class="nav-link text-white mx-4" style="font-size: 22px;">Admin Dashboard</a>
+      @else
+        <a href="{{ route('user.dashboard') }}" class="nav-link text-white mx-4" style="font-size: 22px;">Dashboard</a>
+      @endif
+
+      <a href="{{ route('posts.create') }}" class="nav-link text-white mx-4" style="font-size: 22px;">Create Post</a>
     </div>
 
     <!-- Search Bar and Logout on the Right -->
     <div class="d-flex">
-    <form action="{{ route('posts.search') }}" method="GET" class="d-flex">
-    <input type="search" name="query" class="form-control me-2" placeholder="Search..." aria-label="Search">
-    <button type="submit" class="btn btn-outline-light">Search</button>
-</form>
+      <form action="{{ route('posts.search') }}" method="GET" class="d-flex">
+        <input type="search" name="query" class="form-control me-2" placeholder="Search..." aria-label="Search">
+        <button type="submit" class="btn btn-outline-light">Search</button>
+      </form>
       <form action="{{ route('logout') }}" method="POST">
         @csrf
-        <button type="submit" class="btn btn-outline-light">Logout</button>
+        <button type="submit" class="btn btn-primary">Logout</button>
       </form>
     </div>
   </div>
 </nav>
-
 
 </header>

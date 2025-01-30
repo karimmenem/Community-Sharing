@@ -9,12 +9,12 @@ class CreateUsersTable extends Migration
     public function up()
     {
         Schema::create('users', function (Blueprint $table) {
-            $table->id(); // Primary key
+            $table->id();
             $table->string('username', 50)->unique();
             $table->string('email', 100)->unique();
             $table->string('password');
             $table->string('role', 20)->default('User');
-            $table->integer('reputationPoints')->default(0);
+            $table->integer('reputationPoints')->default(0); // Ensure this column exists
             $table->timestamps();
         });
     }

@@ -24,6 +24,10 @@ Route::post('logout', function () {
 
 Route::get('register', fn() => view('auth.signup'))->name('register');
 Route::post('register', [UserController::class, 'register']);
+
+// Add the welcome route here
+Route::get('/welcome', fn() => view('welcome'))->name('welcome');
+
 // Authenticated Routes
 Route::middleware('auth')->group(function () {
     // Post Routes
@@ -53,8 +57,6 @@ Route::middleware(['auth', 'role:Admin'])->group(function () {
     Route::get('admin/manage-posts', [AdminController::class, 'managePosts'])->name('admin.managePosts');
     Route::delete('admin/delete-user/{id}', [AdminController::class, 'deleteUser'])->name('admin.deleteUser');
     Route::delete('admin/delete-post/{id}', [AdminController::class, 'deletePost'])->name('admin.deletePost');
-
-
 });
 
 // Search Route

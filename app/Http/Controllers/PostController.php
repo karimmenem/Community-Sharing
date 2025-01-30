@@ -33,10 +33,15 @@ class PostController extends Controller
 
     // Apply reputation filter
     if ($request->has('reputation')) {
-        $reputation = $request->reputation;
-        $query->whereHas('user', function ($q) use ($reputation) {
-            $q->where('reputationPoints', '>=', $reputation);
-        });
+        logger('Reputation Filter Value:', ['reputation' => $request->reputation]);
+        if (is_numeric($request->reputation)) {
+            $reputation = (int) $request->reputation;
+            $query->whereHas('user', function ($q) use ($reputation) {
+                $q->where('reputationPoints', '>=', $reputation);
+            });
+        } else {
+            logger('Invalid Reputation Value:', ['reputation' => $request->reputation]);
+        }
     }
 
     // Paginate posts

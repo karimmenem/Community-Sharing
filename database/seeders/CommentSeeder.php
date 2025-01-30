@@ -3,11 +3,11 @@
 namespace Database\Seeders;
 
 use App\Models\Post;
-use App\Models\Vote;
+use App\Models\Comment;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 
-class VoteSeeder extends Seeder
+class CommentSeeder extends Seeder
 {
     public function run()
     {
@@ -16,12 +16,12 @@ class VoteSeeder extends Seeder
         // Get all user IDs
         $users = User::pluck('id')->toArray();
 
-        // Create 1000 votes
-        for ($i = 1; $i <= 1000; $i++) {
-            Vote::create([
+        // Create 500 comments
+        for ($i = 1; $i <= 500; $i++) {
+            Comment::create([
                 'post_id' => $posts[array_rand($posts)], // Random post
                 'user_id' => $users[array_rand($users)], // Random user
-                'vote_type' => (bool) rand(0, 1), // Random vote type (true = upvote, false = downvote)
+                'content' => 'This is a comment on post ' . $posts[array_rand($posts)] . '.',
             ]);
         }
     }

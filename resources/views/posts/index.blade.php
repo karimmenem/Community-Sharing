@@ -42,82 +42,13 @@
 
         <!-- Posts Container -->
         <div id="posts-container">
-            @forelse($posts as $post)
-                <div class="card mb-3">
-                    <div class="card-body">
-                        <h5 class="card-title">{{ $post->title }}</h5>
-
-                        <!-- Post Thumbnail -->
-                        @if ($post->imageUrl)
-                            <img src="{{ $post->imageUrl }}" alt="Post Thumbnail" class="img-thumbnail mb-2" style="max-width: 200px;">
-                        @endif
-
-                        <p class="card-text">{{ Str::limit($post->description, 100) }}</p>
-                        <p class="card-text">
-                            <small class="text-muted">
-                                Category: {{ $post->category?->name ?? 'Uncategorized' }}
-                            </small><br>
-                            <small class="text-muted">Author: {{ $post->user->username }}</small>
-                        </p>
-
-                        <!-- Vote Summary -->
-                        <p class="card-text">
-                            <strong>Votes:</strong>
-                            <span class="text-success">Upvotes: {{ $post->votes->where('vote_type', true)->count() }}</span> |
-                            <span class="text-danger">Downvotes: {{ $post->votes->where('vote_type', false)->count() }}</span>
-                        </p>
-
-                        <!-- Comments Count -->
-                        <p class="card-text">
-                            <strong>Comments:</strong> {{ $post->comments->count() }}
-                        </p>
-
-                        <!-- Voting Buttons -->
-                        <form action="{{ route('posts.vote.upvote', $post) }}" method="POST" style="display: inline;">
-                            @csrf
-                            <button type="submit" class="btn btn-success btn-sm">Upvote</button>
-                        </form>
-
-                        <form action="{{ route('posts.vote.downvote', $post) }}" method="POST" style="display: inline;">
-                            @csrf
-                            <button type="submit" class="btn btn-danger btn-sm">Downvote</button>
-                        </form>
-
-                        <!-- Comments Section -->
-                        <div class="mt-3">
-                            <h6>Comments:</h6>
-                            <ul class="list-group">
-                                @forelse($post->comments as $comment)
-                                    <li class="list-group-item">
-                                        <strong>{{ $comment->user->username }}:</strong> {{ $comment->content }}
-                                    </li>
-                                @empty
-                                    <li class="list-group-item">No comments yet.</li>
-                                @endforelse
-                            </ul>
-                        </div>
-
-                        <!-- Add Comment Form -->
-                        <form action="{{ route('comments.store', $post) }}" method="POST" class="mt-3">
-                            @csrf
-                            <div class="input-group">
-                                <input type="text" name="content" class="form-control" placeholder="Add a comment..." required>
-                                <button type="submit" class="btn btn-primary">Comment</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            @empty
-                <div class="alert alert-info" role="alert">
-                    No posts available.
-                </div>
-            @endforelse
+            @include('posts._post', ['posts' => $posts]) <!-- Include the partial view -->
         </div>
 
         <!-- Show More Button -->
         @if ($posts->hasMorePages())
             <div class="text-center mt-4">
-                <button id="show-more" class="btn btn-primary">Show More</button>
+                <button id="show-more" class="btn btn-primary" data-next-page-url="{{ $posts->nextPageUrl() }}">Show More</button>
             </div>
         @endif
     </div>
@@ -127,7 +58,7 @@
         document.getElementById('show-more').addEventListener('click', function () {
             const button = this;
             const postsContainer = document.getElementById('posts-container');
-            const nextPageUrl = '{{ $posts->nextPageUrl() }}';
+            const nextPageUrl = button.dataset.nextPageUrl;
 
             if (!nextPageUrl) {
                 button.disabled = true;
@@ -136,10 +67,11 @@
 
             // Fetch the next page of posts
             fetch(nextPageUrl)
-                .then(response => response.text()) // Parse the response as HTML
+                .then(response => response.text())
                 .then(html => {
-                    // Append new posts to the container
-                    postsContainer.insertAdjacentHTML('beforeend', html);
+                    // Get the new posts and append them
+                    const newPosts = new DOMParser().parseFromString(html, 'text/html').querySelector('#posts-container').innerHTML;
+                    postsContainer.insertAdjacentHTML('beforeend', newPosts);
 
                     // Update the "Show More" button
                     const nextPageUrl = new DOMParser()
@@ -155,19 +87,6 @@
                     }
                 })
                 .catch(error => console.error('Error loading more posts:', error));
-        });
-
-        // Automatically submit the filter form when a filter is changed
-        document.getElementById('category').addEventListener('change', function () {
-            document.getElementById('filter-form').submit();
-        });
-
-        document.getElementById('sort').addEventListener('change', function () {
-            document.getElementById('filter-form').submit();
-        });
-
-        document.getElementById('reputation').addEventListener('change', function () {
-            document.getElementById('filter-form').submit();
         });
     </script>
 @endsection

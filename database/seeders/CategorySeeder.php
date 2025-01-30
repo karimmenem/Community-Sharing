@@ -8,12 +8,23 @@ use Illuminate\Database\Seeder;
 class CategorySeeder extends Seeder
 {
     public function run()
-    {
-        // Create 10 categories
-        for ($i = 1; $i <= 10; $i++) {
-            Category::create([
-                'name' => 'Category ' . $i,
-            ]);
-        }
+{
+    $categories = [
+        'Technology',
+        'Science',
+        'Health',
+        'Education',
+        'Travel',
+        'Food',
+        'Sports',
+        'Entertainment',
+        'Business',
+        'Art',
+    ];
+
+    foreach ($categories as $category) {
+        Category::firstOrCreate(['name' => $category]);
     }
+}
+
 }
