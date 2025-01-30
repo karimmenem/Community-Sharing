@@ -8,6 +8,9 @@ use App\Http\Controllers\Controller;
 
 class LoginController extends Controller
 {
+    // Add this property to specify the redirection route
+    protected $redirectTo = '/posts';
+
     public function login(Request $request)
     {
         $credentials = $request->validate([
@@ -17,7 +20,7 @@ class LoginController extends Controller
 
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
-            return redirect()->route('posts.index'); // Ensure 'posts.index' route exists
+            return redirect()->route('posts.index'); // Explicitly redirect to posts.index
         }
 
         return back()->withErrors([
@@ -25,10 +28,9 @@ class LoginController extends Controller
         ]);
     }
 
+    // Optional: Override the redirectTo method if you need dynamic redirection
     protected function redirectTo()
-{
-    return route('posts.index');
+    {
+        return route('posts.index');
+    }
 }
-
-}
-

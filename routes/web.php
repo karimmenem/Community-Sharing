@@ -1,6 +1,5 @@
 <?php
 
-
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\UserController;
@@ -28,7 +27,7 @@ Route::post('/register', [UserController::class, 'register']);
 // Authenticated Routes
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', function () {
-        return redirect()->route('posts.index'); // Redirect to posts.index
+        return redirect()->route('posts.index'); // Ensure this redirects to posts.index
     })->name('dashboard');
 
     Route::resource('posts', PostController::class);
