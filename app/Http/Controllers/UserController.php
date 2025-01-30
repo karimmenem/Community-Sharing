@@ -6,115 +6,122 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\ValidationException;
 
 class UserController extends Controller
 {
     public function register(Request $request)
     {
-        $validated = $request->validate([
-            'username' => 'required|string|max:50|unique:users',
-            'email' => 'required|string|email|max:100|unique:users',
-            'password' => 'required|string|min:8|confirmed', // Ensure password confirmation
-        ]);
+        try {
+            $validated = $request->validate([
+                'username' => 'required|string|max:50|unique:users',
+                'email' => 'required|string|email|max:100|unique:users',
+                'password' => 'required|string|min:8|confirmed', // Ensure password confirmation
+            ]);
 
-        // Hash the password here after validation
-        $validated['password'] = Hash::make($validated['password']);
-        
-        // Create user with the validated data
-        $user = User::create($validated);
+            // Hash the password after validation
+            $validated['password'] = Hash::make($validated['password']);
+            
+            // Create user with the validated data
+            $user = User::create($validated);
 
-        return response()->json(['message' => 'User registered successfully', 'user' => $user], 201);
+            return response()->json(['message' => 'User registered successfully', 'user' => $user], 201);
+        } catch (ValidationException $e) {
+            return response()->json(['errors' => $e->errors()], 422);
+        }
     }
 
     public function login(Request $request)
-{
-    $credentials = $request->only('email', 'password');
+    {
+        $credentials = $request->only('email', 'password');
 
-    if (Auth::attempt($credentials)) {
-        $request->session()->regenerate();
+        if (Auth::attempt($credentials)) {
+            $request->session()->regenerate();
 
-        // Redirect based on role
-        if (Auth::user()->role === 'Admin') {
-            return redirect()->route('admin.dashboard');
+            // Redirect based on role
+            if (Auth::user()->role === 'Admin') {
+                return redirect()->route('admin.dashboard');
+            }
+
+            return redirect()->route('posts.index');
         }
 
-        return redirect()->route('posts.index');
+        return back()->withErrors([
+            'email' => 'The provided credentials do not match our records.',
+        ]);
     }
 
-    return back()->withErrors([
-        'email' => 'The provided credentials do not match our records.',
-    ]);
-}
-
-    
-
-    // Get User Profile
-    // In UserController.php
-
-// Show User Dashboard
-public function dashboard()
-{
-    $user = auth()->user();
-    $posts = $user->posts;
-    $comments = $user->comments;
-    return view('user.dashboard', compact('user', 'posts', 'comments'));
-}
-
-// Show Profile Edit Form
-public function editProfile()
-{
-    $user = auth()->user();
-    return view('user.edit-profile', compact('user'));
-}
-
-// Update Profile
-public function updateProfile(Request $request)
-{
-    $user = auth()->user();
-
-    $validated = $request->validate([
-        'username' => 'required|string|max:50|unique:users,username,' . $user->id,
-        'email' => 'required|string|email|max:100|unique:users,email,' . $user->id,
-    ]);
-
-    $user->update($validated);
-    return redirect()->route('user.dashboard')->with('success', 'Profile updated successfully.');
-}
-
-// Show Change Password Form
-public function showChangePasswordForm()
-{
-    return view('user.change-password');
-}
-
-// Change Password
-public function changePassword(Request $request)
-{
-    $user = auth()->user();
-
-    $validated = $request->validate([
-        'current_password' => 'required|string',
-        'new_password' => 'required|string|min:8|confirmed',
-    ]);
-
-    // Verify current password
-    if (!Hash::check($validated['current_password'], $user->password)) {
-        return back()->withErrors(['current_password' => 'The current password is incorrect.']);
+    // Show User Dashboard
+    public function dashboard()
+    {
+        $user = auth()->user();
+        $posts = $user->posts ?? collect(); // Ensure no error if relation doesn't exist
+        $comments = $user->comments ?? collect();
+        
+        return view('user.dashboard', compact('user', 'posts', 'comments'));
     }
 
-    // Update password
-    $user->update([
-        'password' => Hash::make($validated['new_password']),
-    ]);
+    // Show Profile Edit Form
+    public function editProfile()
+    {
+        $user = auth()->user();
+        return view('user.edit-profile', compact('user'));
+    }
 
-    return redirect()->route('user.dashboard')->with('success', 'Password changed successfully.');
-}
+    // Update Profile
+    public function updateProfile(Request $request)
+    {
+        $user = auth()->user();
+
+        try {
+            $validated = $request->validate([
+                'username' => 'required|string|max:50|unique:users,username,' . $user->id,
+                'email' => 'required|string|email|max:100|unique:users,email,' . $user->id,
+            ]);
+
+            $user->update($validated);
+            return redirect()->route('user.dashboard')->with('success', 'Profile updated successfully.');
+        } catch (ValidationException $e) {
+            return back()->withErrors($e->errors());
+        }
+    }
+
+    // Show Change Password Form
+    public function showChangePasswordForm()
+    {
+        return view('auth.passwords.change-password');
+    }
+
+    // Change Password
+    public function changePassword(Request $request)
+    {
+        $request->validate([
+            'current_password' => 'required',
+            'new_password' => 'required|string|min:8|confirmed',
+        ]);
+
+        $user = Auth::user();
+
+        // Verify the current password
+        if (!Hash::check($request->current_password, $user->password)) {
+            return back()->withErrors(['current_password' => 'The current password is incorrect.']);
+        }
+
+        // Update the password
+        $user->update([
+            'password' => Hash::make($request->new_password),
+        ]);
+
+        return redirect()->route('user.dashboard')->with('success', 'Password changed successfully.');
+    }
 
     public function logout()
-{
-    Auth::logout();
-    request()->session()->invalidate();
-    request()->session()->regenerateToken();
-    return redirect()->route('home');
-}
+    {
+        $request = request();
+        Auth::logout();
+        $request->session()->invalidate(); // Invalidate before regenerating
+        $request->session()->regenerateToken();
+
+        return redirect()->route('home');
+    }
 }

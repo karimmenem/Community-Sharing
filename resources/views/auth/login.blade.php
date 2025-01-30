@@ -9,5 +9,5 @@
         <input type="password" class="form-control" id="password" name="password" required>
     </div>
     <button type="submit" class="btn btn-primary loginButt">Login</button>
-    <a href="{{ route('password.request') }}">Forgot Your Password?</a>
+    <a href="{{ route('user.changePasswordForm') }}">Change Password</a>
 </form>
