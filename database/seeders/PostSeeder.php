@@ -10,17 +10,43 @@ class PostSeeder extends Seeder
 {
     public function run()
     {
-        // Get all user IDs
-        $users = User::pluck('id')->toArray();
+        $users = User::all();
 
-        // Create 200 posts
-        for ($i = 1; $i <= 200; $i++) {
-            Post::create([
-                'user_id' => $users[array_rand($users)], // Random user
-                'categoryId' => rand(1, 10), // Random category (1 to 10)
-                'title' => 'Post Title ' . $i,
-                'description' => 'This is the description for post ' . $i . '. It contains some details about the topic.',
-            ]);
+        $posts = [
+            [
+                'user_id' => $users->random()->id,
+                'categoryId' => 1,
+                'title' => 'Mastering Laravel Relationships',
+                'description' => 'Learn how to effectively use Eloquent relationships in Laravel.',
+            ],
+            [
+                'user_id' => $users->random()->id,
+                'categoryId' => 2,
+                'title' => 'Vue.js Composition API Guide',
+                'description' => 'A comprehensive guide to using the Composition API in Vue.js.',
+            ],
+            [
+                'user_id' => $users->random()->id,
+                'categoryId' => 3,
+                'title' => 'Building Scalable REST APIs',
+                'description' => 'Best practices for designing and building scalable REST APIs.',
+            ],
+            [
+                'user_id' => $users->random()->id,
+                'categoryId' => 1,
+                'title' => 'Laravel Queues and Jobs',
+                'description' => 'How to use queues and jobs in Laravel for background processing.',
+            ],
+            [
+                'user_id' => $users->random()->id,
+                'categoryId' => 2,
+                'title' => 'Vue.js Performance Optimization',
+                'description' => 'Tips and tricks for optimizing the performance of Vue.js applications.',
+            ],
+        ];
+
+        foreach ($posts as $post) {
+            Post::create($post);
         }
     }
 }

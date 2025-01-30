@@ -120,19 +120,23 @@ public function show(Post $post)
     }
 
     public function search(Request $request)
-    {
-        $query = $request->input('query');
+{
+    $query = $request->input('query');
 
-        $posts = Post::with(['user', 'category', 'votes'])
-            ->where('title', 'like', "%$query%")
-            ->orWhere('description', 'like', "%$query%")
-            ->orWhereHas('user', function ($q) use ($query) {
-                $q->where('username', 'like', "%$query%");
-            })
-            ->get();
+    // Fetch categories to fix the undefined variable error
+    $categories = Category::all();
 
-        return view('posts.index', compact('posts'));
-    }
+    $posts = Post::with(['user', 'category', 'votes'])
+        ->where('title', 'like', "%$query%")
+        ->orWhere('description', 'like', "%$query%")
+        ->orWhereHas('user', function ($q) use ($query) {
+            $q->where('username', 'like', "%$query%");
+        })
+        ->paginate(10); // Paginate for consistency
+
+    return view('posts.index', compact('posts', 'categories'));
+}
+
 
     public function create()
     {
