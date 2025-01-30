@@ -40,9 +40,10 @@
         <button type="submit" class="btn btn-outline-light">Search</button>
       </form>
       <form action="{{ route('logout') }}" method="POST">
-        @csrf
-        <button type="submit" class="btn btn-primary">Logout</button>
-      </form>
+    @csrf
+    <button type="submit" class="btn btn-outline-light">Logout</button>
+</form>
+
     </div>
   </div>
 </nav>

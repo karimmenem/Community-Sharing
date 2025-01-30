@@ -7,9 +7,13 @@
             <a href="{{ route('posts.index') }}" class="btn btn-secondary">Back to Posts</a>
         </div>
 
+        <!-- Debug: Check if reputationPoints exists -->
+        <pre>{{ print_r($post->user, true) }}</pre>
+
+        <!-- Post Details -->
         <h1>{{ $post->title }}</h1>
         <p><strong>Category:</strong> {{ $post->category?->name ?? 'Uncategorized' }}</p>
-        <p><strong>Author:</strong> {{ $post->user->username }}</p>
+        <p><strong>Author:</strong> {{ $post->user->username }} (Reputation: {{ $post->user->reputationPoints }})</p>
         <p>{{ $post->description }}</p>
 
         <!-- Post Image -->
@@ -61,7 +65,7 @@
                         <p class="card-text">{{ $comment->content }}</p>
                         <p class="card-text">
                             <small class="text-muted">
-                                By: {{ $comment->user->username }} | {{ $comment->created_at->diffForHumans() }}
+                                By: {{ $comment->user->username }} (Reputation: {{ $comment->user->reputationPoints }}) | {{ $comment->created_at->diffForHumans() }}
                             </small>
                         </p>
                     </div>

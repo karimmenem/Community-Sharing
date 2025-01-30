@@ -11,21 +11,26 @@ use Illuminate\Validation\ValidationException;
 class UserController extends Controller
 {
     public function register(Request $request)
-    {
-        $validated = $request->validate([
-            'username' => 'required|string|max:50|unique:users',
-            'email' => 'required|string|email|max:100|unique:users',
-            'password' => 'required|string|min:8|confirmed', // Ensure password confirmation
-        ]);
+{
+    // Validate the incoming request
+    $validated = $request->validate([
+        'username' => 'required|string|max:50|unique:users',
+        'email' => 'required|string|email|max:100|unique:users',
+        'password' => 'required|string|min:8|confirmed', // Ensure password confirmation
+    ]);
 
-        // Hash the password here after validation
-        $validated['password'] = Hash::make($validated['password']);
-        
-        // Create user with the validated data
-        $user = User::create($validated);
+    // Hash the password
+    $validated['password'] = Hash::make($validated['password']);
 
-        return response()->json(['message' => 'User registered successfully', 'user' => $user], 201);
-    }
+    // Create the user
+    $user = User::create($validated);
+
+    // Log in the user
+    Auth::login($user);
+
+    // Redirect to the desired page (e.g., the user's dashboard)
+    return redirect()->route('user.dashboard')->with('success', 'Registration successful!');
+}
 
     public function login(Request $request)
 {

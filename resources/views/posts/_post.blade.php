@@ -12,9 +12,12 @@
             <p class="card-text">{{ Str::limit($post->description, 100) }}</p>
             <p class="card-text">
                 <small class="text-muted">
-                    Category: {{ $post->category?->name ?? 'Uncategorized' }}
+                    <strong>Category:</strong> {{ $post->category?->name ?? 'Uncategorized' }}
                 </small><br>
-                <small class="text-muted">Author: {{ $post->user->username }}</small>
+                <small class="text-muted">
+                    <strong>Author:</strong> {{ $post->user?->username ?? 'Unknown' }}
+                    (Reputation: {{ $post->user?->reputationPoints ?? 0 }})
+                </small>
             </p>
 
             <!-- Vote Summary -->
@@ -46,7 +49,7 @@
                 <ul class="list-group">
                     @forelse($post->comments as $comment)
                         <li class="list-group-item">
-                            <strong>{{ $comment->user->username }}:</strong> {{ $comment->content }}
+                            <strong>{{ $comment->user?->username ?? 'Unknown' }}:</strong> {{ $comment->content }}
                         </li>
                     @empty
                         <li class="list-group-item">No comments yet.</li>

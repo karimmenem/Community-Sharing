@@ -54,3 +54,173 @@
     background-color: #2980b9; /* Darker shade for hover effect */
     border-color: #2980b9;
 }
+
+.btn-purple {
+    background-color: #6f42c1;
+    border-color: #6f42c1;
+}
+.btn-purple:hover {
+    background-color: #5a34a2;
+    border-color: #5a34a2;
+}
+
+.btn-light-purple {
+    background-color: #a69edb; /* Light purple color */
+    border-color: #a69edb; /* Same light purple border */
+}
+
+.btn-light-purple:hover {
+    background-color: #8c86c9; /* Slightly darker shade for hover effect */
+    border-color: #8c86c9;
+}
+
+
+/* Dark Purple button for Forgot Password */
+.btn-dark-purple {
+    color: white; /* White text */
+    background-color: #6a2c93; /* Dark purple color */
+    border-color: #6a2c93; /* Dark purple border */
+}
+
+.btn-dark-purple:hover {
+    background-color: #53277c; /* Darker shade for hover effect */
+    border-color: #53277c;
+}
+
+/* Styles for the Login Card */
+#login-card {
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    background-color: #f8f9fa;
+}
+
+/* Title Style */
+#login-title {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    color: #4a4a4a;
+}
+
+/* Light Purple Button for Login */
+#login-btn {
+    background-color: #9b59b6; /* Light purple */
+    border: none;
+    transition: background-color 0.3s ease;
+}
+
+/* Hover Effect for Light Purple Button */
+#login-btn:hover {
+    background-color: #8e44ad; /* Darker purple on hover */
+}
+
+/* Forgot Password Button (Dark Purple) */
+#forgot-password-btn {
+    background-color: #6a1b9a; /* Dark Purple */
+    border: none;
+    transition: background-color 0.3s ease;
+    text-decoration: none;
+    color: white;
+    font-weight: 600;
+    padding: 8px 20px;
+    border-radius: 5px;
+}
+
+/* Hover Effect for Forgot Password Button */
+#forgot-password-btn:hover {
+    background-color: #4e148c; /* Darker purple on hover */
+}
+
+/* Link to Sign Up */
+#signup-link {
+    font-size: 14px;
+    color: #6c757d;
+}
+
+/* Input Fields and Form Styles */
+.form-control {
+    border-radius: 8px;
+    font-size: 14px;
+    border: 1px solid #ddd;
+    padding: 12px;
+}
+
+.form-label {
+    font-size: 14px;
+    color: #6c757d;
+    font-weight: 600;
+}
+
+/* Card Shadows and Alignment */
+.card {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    background-color: #f8f9fa;
+    border-radius: 10px;
+    padding: 30px;
+}
+
+/* Body Background */
+body {
+    background-color: #f4f6f8;
+    font-family: 'Poppins', sans-serif;
+}
+
+/* Register Card Styles */
+#register-card {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    background-color: #f8f9fa;
+}
+
+/* Title Style for Registration */
+#register-title {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    color: #4a4a4a;
+}
+
+/* Light Purple Button for Register */
+#register-btn {
+    background-color: #9b59b6; /* Light purple */
+    border: none;
+    transition: background-color 0.3s ease;
+}
+
+/* Hover Effect for Register Button */
+#register-btn:hover {
+    background-color: #8e44ad; /* Darker purple on hover */
+}
+
+/* Input Fields and Form Styles */
+.form-control {
+    border-radius: 8px;
+    font-size: 14px;
+    border: 1px solid #ddd;
+    padding: 12px;
+}
+
+/* Form Labels */
+.form-label {
+    font-size: 14px;
+    color: #6c757d;
+    font-weight: 600;
+}
+
+/* Error Message Styling */
+.invalid-feedback {
+    color: #e74c3c;
+    font-size: 12px;
+}
+
+/* Card Shadows and Alignment */
+.card {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    background-color: #f8f9fa;
+    border-radius: 10px;
+    padding: 30px;
+}
+
+/* Body Background */
+body {
+    background-color: #f4f6f8;
+    font-family: 'Poppins', sans-serif;
+}

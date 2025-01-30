@@ -15,7 +15,8 @@
     <div class="col-lg-6 mx-auto">
         <p class="lead mb-4 welcomePar">Join a community where knowledge flows freely. Share your experiences, solve problems together, and grow with like-minded individuals. Whether you're seeking advice or offering insights, ShareSphere is the space to exchange ideas and make a difference.</p>
         <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
-            <button type="button" class="btn btn-primary btn-lg px-4 gap-3 custom-primary-btn" data-bs-toggle="modal" data-bs-target="#loginModal">Login</button>
+            <!-- Login Button with Purple Color -->
+            <button type="button" class="btn btn-purple btn-lg px-4 gap-3 custom-primary-btn" data-bs-toggle="modal" data-bs-target="#loginModal">Login</button>
             <button type="button" class="btn btn-outline-secondary btn-lg px-4 custom-secondary-btn" data-bs-toggle="modal" data-bs-target="#signupModal">Sign Up</button>
         </div>
     </div>
@@ -40,7 +41,13 @@
                         <label for="password" class="form-label">Password</label>
                         <input type="password" class="form-control" id="password" name="password" required>
                     </div>
-                    <button type="submit" class="btn btn-primary">Login</button>
+                    <button type="submit" class="btn btn-light-purple text-white">Login</button>
+                    <!-- Forgot Password Button -->
+                    <!-- Forgot Password Button with Dark Purple Color -->
+<div class="mt-3">
+    <a href="{{ route('user.changePasswordForm') }}" class="btn btn-dark-purple">Forgot Password?</a>
+</div>
+
                 </form>
             </div>
         </div>

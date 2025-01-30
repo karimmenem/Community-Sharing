@@ -85,11 +85,11 @@ public function store(Request $request)
 
 public function show(Post $post)
 {
-    // Eager load relationships
-    $post->load(['user', 'category', 'comments', 'votes']);
+    // Eager load the user relationship with reputationPoints
+    $post->load(['user', 'category', 'comments.user', 'votes']);
+
     return view('posts.show', compact('post'));
 }
-
     public function update(Request $request, Post $post)
     {
         $validated = $request->validate([
