@@ -54,6 +54,7 @@ class PostController extends Controller
     return view('posts.index', compact('posts', 'categories'));
 }
 
+
 public function store(Request $request)
 {
     $validated = $request->validate([
@@ -91,12 +92,12 @@ public function store(Request $request)
     
 
 
-    public function show(Post $post)
-    {
-        // Eager load relationships
-        $post->load(['user', 'category', 'comments', 'votes']);
-        return view('posts.show', compact('post'));
-    }
+public function show(Post $post)
+{
+    // Eager load relationships
+    $post->load(['user', 'category', 'comments', 'votes']);
+    return view('posts.show', compact('post'));
+}
 
     public function update(Request $request, Post $post)
     {

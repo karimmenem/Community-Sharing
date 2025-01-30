@@ -15,34 +15,31 @@ class Post extends Model
         'categoryId',
         'title',
         'description',
-        'image' // Add this line
+        'image'
     ];
 
-    // Relationships
     public function user()
     {
-        return $this->belongsTo(User::class, 'user_id', 'id');
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     public function category()
     {
-        return $this->belongsTo(Category::class, 'categoryId', 'categoryId');
+        return $this->belongsTo(Category::class, 'categoryId');
     }
 
     public function votes()
     {
-        return $this->hasMany(Vote::class, 'post_id', 'postId');
+        return $this->hasMany(Vote::class, 'post_id');
     }
 
-    // Add this missing relationship
     public function comments()
     {
-        return $this->hasMany(Comment::class, 'post_id', 'postId');
+        return $this->hasMany(Comment::class, 'post_id');
     }
 
     public function getImageUrlAttribute()
-{
-    return $this->image ? asset('storage/' . $this->image) : null;
-}
-
+    {
+        return $this->image ? asset('storage/' . $this->image) : null;
+    }
 }

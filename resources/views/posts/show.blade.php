@@ -23,10 +23,11 @@
 
         <!-- Voting Buttons -->
         @php
-            $userVote = $post->votes->firstWhere('user_id', auth()->id());
+            $userVote = $post->votes->where('user_id', auth()->id())->first();
         @endphp
 
         @if (!$userVote)
+            <!-- User has not voted yet -->
             <form action="{{ route('posts.vote.upvote', $post) }}" method="POST" style="display: inline;">
                 @csrf
                 <button type="submit" class="btn btn-success btn-sm">Upvote</button>
@@ -37,18 +38,22 @@
                 <button type="submit" class="btn btn-danger btn-sm">Downvote</button>
             </form>
         @else
+            <!-- User has already voted -->
             @if ($userVote->vote_type)
+                <!-- User has upvoted, show option to change to downvote -->
                 <form action="{{ route('posts.vote.downvote', $post) }}" method="POST" style="display: inline;">
                     @csrf
                     <button type="submit" class="btn btn-danger btn-sm">Change to Downvote</button>
                 </form>
             @else
+                <!-- User has downvoted, show option to change to upvote -->
                 <form action="{{ route('posts.vote.upvote', $post) }}" method="POST" style="display: inline;">
                     @csrf
                     <button type="submit" class="btn btn-success btn-sm">Change to Upvote</button>
                 </form>
             @endif
 
+            <!-- Option to remove vote -->
             <form action="{{ route('posts.vote.remove', $post) }}" method="POST" style="display: inline;">
                 @csrf
                 @method('DELETE')
@@ -57,16 +62,20 @@
         @endif
 
         <!-- Comment Form -->
-        <div class="mt-4">
-            <form action="{{ route('comments.store', $post) }}" method="POST">
-                @csrf
-                <div class="mb-3">
-                    <label for="content" class="form-label">Add a Comment</label>
-                    <textarea class="form-control" id="content" name="content" rows="3" required></textarea>
-                </div>
-                <button type="submit" class="btn btn-primary">Submit</button>
-            </form>
-        </div>
+        @auth
+            <div class="mt-4">
+                <form action="{{ route('comments.store', $post) }}" method="POST">
+                    @csrf
+                    <div class="mb-3">
+                        <label for="content" class="form-label">Add a Comment</label>
+                        <textarea class="form-control" id="content" name="content" rows="3" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </form>
+            </div>
+        @else
+            <p>Please <a href="{{ route('login') }}">log in</a> to comment.</p>
+        @endauth
 
         <!-- Display Comments -->
         <div class="mt-4">
