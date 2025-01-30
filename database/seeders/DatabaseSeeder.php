@@ -8,13 +8,10 @@ class DatabaseSeeder extends Seeder
 {
     public function run()
     {
-        // Seed categories first
-        $this->call(CategoriesTableSeeder::class);
-
-        // Seed users, posts, votes, and comments
-        $this->call(UsersTableSeeder::class);
-        $this->call(PostsTableSeeder::class);
-        $this->call(VotesTableSeeder::class);
-        $this->call(CommentsTableSeeder::class);
+        $this->call([
+            UserSeeder::class,
+            PostSeeder::class,
+            VoteSeeder::class,
+        ]);
     }
 }
