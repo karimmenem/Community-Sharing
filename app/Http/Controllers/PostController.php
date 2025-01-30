@@ -10,42 +10,41 @@ use Illuminate\Support\Facades\Storage;
 class PostController extends Controller
 {
     public function index(Request $request)
-    {
-        // Fetch all categories
-        $categories = Category::all();
-    
-        // Start building the query for posts
-        $query = Post::with(['user', 'category', 'votes']);
-    
-        // Apply category filter
-        if ($request->has('category') && $request->category != '') {
-            $query->where('categoryId', $request->category);
-        }
-    
-        // Apply sorting
-        if ($request->has('sort')) {
-            if ($request->sort == 'newest') {
-                $query->orderBy('created_at', 'desc');
-            } elseif ($request->sort == 'popular') {
-                $query->withCount('votes')->orderBy('votes_count', 'desc');
-            }
-        }
-    
-        // Apply reputation filter
-        if ($request->has('reputation')) {
-            $reputation = $request->reputation;
-            $query->whereHas('user', function ($q) use ($reputation) {
-                $q->where('reputationPoints', '>=', $reputation);
-            });
-        }
-    
-        // Paginate posts
-        $posts = $query->paginate(10); // Adjust the number as needed
-    
-        // Return the view with posts and categories
-        return view('posts.index', compact('posts', 'categories'));
+{
+    // Fetch all categories
+    $categories = Category::all();
+
+    // Start building the query for posts
+    $query = Post::with(['user', 'category', 'votes']);
+
+    // Apply category filter
+    if ($request->has('category') && $request->category != '') {
+        $query->where('categoryId', $request->category);
     }
 
+    // Apply sorting
+    if ($request->has('sort')) {
+        if ($request->sort == 'newest') {
+            $query->orderBy('created_at', 'desc');
+        } elseif ($request->sort == 'popular') {
+            $query->withCount('votes')->orderBy('votes_count', 'desc');
+        }
+    }
+
+    // Apply reputation filter
+    if ($request->has('reputation')) {
+        $reputation = $request->reputation;
+        $query->whereHas('user', function ($q) use ($reputation) {
+            $q->where('reputationPoints', '>=', $reputation);
+        });
+    }
+
+    // Paginate posts
+    $posts = $query->paginate(10); // Adjust the number as needed
+
+    // Return the view with posts and categories
+    return view('posts.index', compact('posts', 'categories'));
+}
 
 
 public function store(Request $request)

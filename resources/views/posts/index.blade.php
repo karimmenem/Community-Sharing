@@ -9,6 +9,7 @@
             <div class="col-md-4">
                 <form id="filter-form" method="GET" action="{{ route('posts.index') }}">
                     <div class="input-group">
+                        <!-- Category Filter -->
                         <select name="category" id="category" class="form-select">
                             <option value="">All Categories</option>
                             @foreach($categories as $category)
@@ -17,11 +18,22 @@
                                 </option>
                             @endforeach
                         </select>
+
+                        <!-- Sort Filter -->
                         <select name="sort" id="sort" class="form-select">
                             <option value="">Sort By</option>
                             <option value="newest" {{ request('sort') == 'newest' ? 'selected' : '' }}>Newest</option>
                             <option value="popular" {{ request('sort') == 'popular' ? 'selected' : '' }}>Most Popular</option>
                         </select>
+
+                        <!-- Reputation Filter -->
+                        <select name="reputation" id="reputation" class="form-select">
+                            <option value="">Filter by Reputation</option>
+                            <option value="100" {{ request('reputation') == 100 ? 'selected' : '' }}>100+ Reputation</option>
+                            <option value="500" {{ request('reputation') == 500 ? 'selected' : '' }}>500+ Reputation</option>
+                            <option value="1000" {{ request('reputation') == 1000 ? 'selected' : '' }}>1000+ Reputation</option>
+                        </select>
+
                         <button type="submit" class="btn btn-primary">Apply Filters</button>
                     </div>
                 </form>
@@ -36,7 +48,7 @@
                         <h5 class="card-title">{{ $post->title }}</h5>
 
                         <!-- Post Thumbnail -->
-                        @if ($post->image)
+                        @if ($post->imageUrl)
                             <img src="{{ $post->imageUrl }}" alt="Post Thumbnail" class="img-thumbnail mb-2" style="max-width: 200px;">
                         @endif
 
@@ -96,7 +108,9 @@
                     </div>
                 </div>
             @empty
-                <p>No posts available.</p>
+                <div class="alert alert-info" role="alert">
+                    No posts available.
+                </div>
             @endforelse
         </div>
 
@@ -122,14 +136,19 @@
 
             // Fetch the next page of posts
             fetch(nextPageUrl)
-                .then(response => response.json())
-                .then(data => {
+                .then(response => response.text()) // Parse the response as HTML
+                .then(html => {
                     // Append new posts to the container
-                    postsContainer.innerHTML += data.posts;
+                    postsContainer.insertAdjacentHTML('beforeend', html);
 
                     // Update the "Show More" button
-                    if (data.next_page_url) {
-                        button.dataset.nextPageUrl = data.next_page_url;
+                    const nextPageUrl = new DOMParser()
+                        .parseFromString(html, 'text/html')
+                        .querySelector('#show-more')
+                        ?.dataset.nextPageUrl;
+
+                    if (nextPageUrl) {
+                        button.dataset.nextPageUrl = nextPageUrl;
                     } else {
                         button.disabled = true;
                         button.textContent = 'No more posts';
@@ -144,6 +163,10 @@
         });
 
         document.getElementById('sort').addEventListener('change', function () {
+            document.getElementById('filter-form').submit();
+        });
+
+        document.getElementById('reputation').addEventListener('change', function () {
             document.getElementById('filter-form').submit();
         });
     </script>
