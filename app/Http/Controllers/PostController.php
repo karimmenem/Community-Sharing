@@ -9,15 +9,50 @@ use Illuminate\Support\Facades\Storage;
 
 class PostController extends Controller
 {
-    public function index()
+    public function index(Request $request)
 {
-    // Fetch posts with relationships
-    $posts = Post::with(['user', 'category', 'votes'])->get();
+    // Start with all posts
+    $query = Post::with(['user', 'category', 'votes', 'comments']);
 
+    // Apply filters
+    if ($request->has('category')) {
+        $query->where('categoryId', $request->input('category'));
+    }
 
-    return view('posts.index', compact('posts'));
+    if ($request->has('sort')) {
+        switch ($request->input('sort')) {
+            case 'popular':
+                $query->withCount(['votes as upvotes_count' => function ($q) {
+                    $q->where('vote_type', true);
+                }])->orderByDesc('upvotes_count');
+                break;
+            case 'newest':
+                $query->latest();
+                break;
+            default:
+                $query->latest();
+                break;
+        }
+    } else {
+        $query->latest();
+    }
+
+    // Paginate the results (16 posts per page)
+    $posts = $query->paginate(16);
+
+    // If the request is AJAX, return the posts as JSON
+    if ($request->ajax()) {
+        return response()->json([
+            'posts' => $posts->items(),
+            'next_page_url' => $posts->nextPageUrl(),
+        ]);
+    }
+
+    // Get all categories for the filter dropdown
+    $categories = Category::all();
+
+    return view('posts.index', compact('posts', 'categories'));
 }
-
 
 public function store(Request $request)
 {
