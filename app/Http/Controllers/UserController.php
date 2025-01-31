@@ -88,9 +88,9 @@ class UserController extends Controller
 
     // Show Change Password Form
     public function showChangePasswordForm()
-{
-    return view('auth.passwords.change-password');
-}
+    {
+        return view('auth.passwords.change-password');
+    }
 
     // Change Password
     public function changePassword(Request $request)
@@ -101,22 +101,17 @@ class UserController extends Controller
         'new_password' => 'required|string|min:8',
     ]);
 
-    // Find the user by email
     $user = User::where('email', $request->email)->first();
 
     if (!$user) {
         return back()->withErrors(['email' => 'The provided email does not match our records.']);
     }
 
-    // Verify the current password
     if (!Hash::check($request->current_password, $user->password)) {
         return back()->withErrors(['current_password' => 'The current password is incorrect.']);
     }
 
-    // Update the password
-    $user->update([
-        'password' => Hash::make($request->new_password),
-    ]);
+    $user->update(['password' => Hash::make($request->new_password)]);
 
     return redirect()->route('welcome')->with('success', 'Password changed successfully.');
 }
