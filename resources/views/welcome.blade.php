@@ -42,12 +42,12 @@
                         <input type="password" class="form-control" id="password" name="password" required>
                     </div>
                     <button type="submit" class="btn btn-light-purple text-white">Login</button>
-                    <!-- Forgot Password Button -->
-                    <!-- Forgot Password Button with Dark Purple Color -->
-<div class="mt-3">
-    <a href="{{ route('user.changePasswordForm') }}" class="btn btn-dark-purple">Forgot Password?</a>
-</div>
+                    
+                    <!-- Change Password Button -->
+                    <div class="mt-3">
+                    <a href="{{ route('user.changePasswordForm') }}" class="btn btn-dark-purple">Change Password</a>
 
+                    </div>
                 </form>
             </div>
         </div>
