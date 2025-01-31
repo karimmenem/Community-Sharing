@@ -108,7 +108,7 @@ public function update(Request $request, Post $post)
         abort(403, 'Unauthorized action.'); // Return a 403 Forbidden error
     }
 
-    // Validate the request
+    // Validate incoming data
     $validated = $request->validate([
         'title' => 'required|string|max:255',
         'description' => 'required|string',
@@ -126,10 +126,11 @@ public function update(Request $request, Post $post)
         $validated['image'] = $path;
     }
 
-    // Update the post
+    // Update the post with the validated data
     $post->update($validated);
 
-    return redirect()->route('posts.show', $post)->with('success', 'Post updated successfully!');
+    // Redirect to posts.index with a success message
+    return redirect()->route('posts.index')->with('success', 'Post updated successfully!');
 }
 
 public function destroy(Post $post)
@@ -149,7 +150,6 @@ public function destroy(Post $post)
 
     return redirect()->route('posts.index')->with('success', 'Post deleted successfully!');
 }
-
     public function search(Request $request)
 {
     $query = $request->input('query');
