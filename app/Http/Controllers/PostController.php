@@ -90,34 +90,65 @@ public function show(Post $post)
 
     return view('posts.show', compact('post'));
 }
-    public function update(Request $request, Post $post)
-    {
-        $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'description' => 'required|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-        ]);
+public function edit(Post $post)
+{
+    // Ensure the authenticated user is the author of the post
+    if (auth()->id() !== $post->user_id) {
+        abort(403, 'Unauthorized action.'); // Return a 403 Forbidden error
+    }
 
-        // Handle image update
-        if ($request->hasFile('image')) {
-            // Delete old image if exists
-            if ($post->image) {
-                Storage::disk('public')->delete($post->image);
-            }
-            $path = $request->file('image')->store('posts', 'public');
-            $validated['image'] = $path;
+    $categories = Category::all(); // Fetch categories for the edit form
+    return view('posts.edit', compact('post', 'categories'));
+}
+
+public function update(Request $request, Post $post)
+{
+    // Ensure the authenticated user is the author of the post
+    if (auth()->id() !== $post->user_id) {
+        abort(403, 'Unauthorized action.'); // Return a 403 Forbidden error
+    }
+
+    // Validate the request
+    $validated = $request->validate([
+        'title' => 'required|string|max:255',
+        'description' => 'required|string',
+        'categoryId' => 'required|exists:categories,categoryId',
+        'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+    ]);
+
+    // Handle image update
+    if ($request->hasFile('image')) {
+        // Delete old image if it exists
+        if ($post->image) {
+            Storage::disk('public')->delete($post->image);
         }
-
-        $post->update($validated);
-        return redirect()->route('posts.show', $post)->with('success', 'Post updated!');
+        $path = $request->file('image')->store('posts', 'public');
+        $validated['image'] = $path;
     }
 
-    public function destroy(Post $post)
-    {
-        // Delete the post
-        $post->delete();
-        return response()->json(['message' => 'Post deleted successfully'], 200);
+    // Update the post
+    $post->update($validated);
+
+    return redirect()->route('posts.show', $post)->with('success', 'Post updated successfully!');
+}
+
+public function destroy(Post $post)
+{
+    // Ensure the authenticated user is the author of the post
+    if (auth()->id() !== $post->user_id) {
+        abort(403, 'Unauthorized action.'); // Return a 403 Forbidden error
     }
+
+    // Delete the post's image if it exists
+    if ($post->image) {
+        Storage::disk('public')->delete($post->image);
+    }
+
+    // Delete the post
+    $post->delete();
+
+    return redirect()->route('posts.index')->with('success', 'Post deleted successfully!');
+}
 
     public function search(Request $request)
 {
